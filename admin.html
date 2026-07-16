@@ -19,21 +19,157 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             margin: 0 auto;
         }
-        h2 { text-align: center; margin-bottom: 20px; color: #2D38AB; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        h2 { text-align: center; margin-bottom: 25px; color: #2D38AB; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: bold; margin-bottom: 8px; }
         input[type="text"], textarea {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             border: 1px solid #ccc;
             border-radius: 4px;
             box-sizing: border-box;
+            font-size: 14px;
         }
-        textarea { height: 120px; resize: vertical; }
+        textarea { height: 150px; resize: vertical; }
         .btn-save {
             width: 100%;
             background: #2D38AB;
             color: #fff;
+            padding: 14px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .btn-save:hover { background: #4242A6; }
+        
+        /* Dynamic Loading State Styling */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="admin-box" id="adminBox">
+    <h2>စာအုပ်အသစ်ထည့်ရန် စနစ်</h2>
+
+    <!-- Book Add Form (No configurations shown to the client) -->
+    <div class="form-group">
+        <label>စာအုပ် မျက်နှာဖုံး Image Direct URL (PNG/JPG)</label>
+        <input type="text" id="bookImage" placeholder="https://i.ibb.co/xxxxx/image.png">
+    </div>
+
+    <div class="form-group">
+        <label>စာအုပ်နာမည်</label>
+        <input type="text" id="bookTitle" placeholder="စာအုပ်အမည် ရေးရန်">
+    </div>
+
+    <div class="form-group">
+        <label>စာအုပ်အကြောင်းအရာ/အညွှန်း</label>
+        <textarea id="bookDesc" placeholder="စာအုပ်အတွင်းပိုင်း ပါဝင်အကြောင်းအရာများ အစအဆုံး ရေးသားရန်..."></textarea>
+    </div>
+
+    <button class="btn-save" id="saveBtn" onclick="saveBook()">SAVE (သိမ်းဆည်းမည်)</button>
+</div>
+
+<script>
+    // GitHub Credentials Hardcoded (Bypasses setup for client)
+    const GH_USER = "myanmarpagoda112-ux";
+    const GH_REPO = "arr-t-2";
+    const GH_TOKEN = "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";
+
+    async function saveBook() {
+        const imgUrl = document.getElementById('bookImage').value.trim();
+        const title = document.getElementById('bookTitle').value.trim();
+        const desc = document.getElementById('bookDesc').value.trim();
+        const saveBtn = document.getElementById('saveBtn');
+        const adminBox = document.getElementById('adminBox');
+
+        if(!imgUrl || !title || !desc) {
+            alert("အချက်အလက်အားလုံး ပြည့်စုံအောင် ဖြည့်စွက်ပေးပါ!");
+            return;
+        }
+
+        // Show Loading State
+        saveBtn.innerText = "သိမ်းဆည်းနေပါသည်...";
+        adminBox.classList.add('loading');
+
+        const filepath = 'books.json';
+        const url = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${filepath}`;
+
+        let currentData = [];
+        let sha = "";
+
+        // Step 1: Get Existing books.json to update it
+        try {
+            let response = await fetch(url, {
+                headers: { 'Authorization': `token ${GH_TOKEN}` }
+            });
+            
+            if(response.ok) {
+                let jsonRes = await response.json();
+                sha = jsonRes.sha;
+                // Decode base64 contents from github
+                let decodedContent = decodeURIComponent(escape(atob(jsonRes.content)));
+                currentData = JSON.parse(decodedContent);
+            }
+        } catch(e) {
+            console.log("Starting a new books.json array configuration.");
+        }
+
+        // Step 2: Push new object into current array
+        const newBook = {
+            image: imgUrl,
+            title: title,
+            description: desc,
+            date: new Date().toISOString()
+        };
+        currentData.push(newBook);
+
+        // Step 3: Send back updated content to Github
+        const updatedContentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(currentData, null, 2))));
+        
+        let bodyData = {
+            message: `Added new book: ${title}`,
+            content: updatedContentBase64
+        };
+        if(sha !== "") bodyData.sha = sha; // required for modifying existing files
+
+        try {
+            let uploadRes = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `token ${GH_TOKEN}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(bodyData)
+            });
+
+            if(uploadRes.ok) {
+                alert("စာအုပ်အား Database (GitHub) ထဲသို့ အောင်မြင်စွာ တင်ပြီးပါပြီ။ ၁ မိနစ်ခန့်အကြာတွင် မူရင်း Web ပေါ်တွင် မြင်တွေ့ရပါမည်။");
+                // Clear input boxes
+                document.getElementById('bookImage').value = '';
+                document.getElementById('bookTitle').value = '';
+                document.getElementById('bookDesc').value = '';
+            } else {
+                let errData = await uploadRes.json();
+                alert("အမှားအယွင်းရှိသွားပါသည်: " + errData.message);
+            }
+        } catch(err) {
+            alert("Connection error occurred!");
+        } finally {
+            // Reset Loading State
+            saveBtn.innerText = "SAVE (သိမ်းဆည်းမည်)";
+            adminBox.classList.remove('loading');
+        }
+    }
+</script>
+</body>
+</html>
             padding: 12px;
             border: none;
             border-radius: 4px;
