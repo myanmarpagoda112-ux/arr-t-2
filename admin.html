@@ -2,265 +2,73 @@
 <html lang="my">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BurmaRHubb Admin Panel</title>
+    <title>Admin Panel</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-        }
-        body {
-            background-color: #f4f6f9;
-            padding: 20px;
-            color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .admin-box {
-            width: 100%;
-            max-width: 500px;
-            background: #ffffff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        }
-        h2 { 
-            text-align: center; 
-            margin-bottom: 25px; 
-            color: #2D38AB; 
-            font-size: 24px;
-        }
-        .form-group { 
-            margin-bottom: 20px; 
-        }
-        label { 
-            display: block; 
-            font-weight: bold; 
-            margin-bottom: 8px; 
-            font-size: 14px;
-            color: #444;
-        }
-        input[type="text"], input[type="password"], textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 14px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-        input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
-            border-color: #2D38AB;
-        }
-        textarea { 
-            height: 200px; 
-            resize: vertical; 
-        }
-        .btn-save {
-            width: 100%;
-            background: #2D38AB;
-            color: #ffffff;
-            padding: 14px;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background 0.3s;
-        }
-        .btn-save:hover { 
-            background: #4242A6; 
-        }
-        .loading {
-            opacity: 0.6;
-            pointer-events: none;
-        }
-        .token-alert {
-            background: #ffe6e6;
-            color: #cc0000;
-            padding: 10px;
-            border-radius: 6px;
-            margin-bottom: 15px;
-            font-size: 13px;
-            text-align: center;
-            display: none;
-        }
+        body { background: #1a1c23; color: #fff; font-family: sans-serif; display: flex; justify-content: center; padding: 20px; }
+        .card { background: #242630; padding: 20px; border-radius: 8px; width: 100%; max-width: 400px; }
+        input, textarea { width: 100%; padding: 10px; margin: 10px 0; background: #1a1c23; border: 1px solid #4242a6; color: #fff; }
+        button { width: 100%; padding: 10px; background: #2d38ab; border: none; color: #fff; cursor: pointer; }
     </style>
 </head>
 <body>
-
-<div class="admin-box" id="adminBox">
-    <h2>စာအုပ်အသစ်ထည့်ရန် စနစ်</h2>
-
-    <div class="token-alert" id="tokenAlert">
-        ⚠️ GitHub Token မထည့်ရသေးပါ။ အောက်က ကွက်လပ်မှာ အရင်ထည့်ပေးပါ။
+    <div class="card" id="loginBox">
+        <h2>Login</h2>
+        <input type="password" id="tokenInput" placeholder="Enter GitHub Token (ghp_...)">
+        <button onclick="saveToken()">Login</button>
     </div>
 
-    <!-- Token ထည့်ရန် နေရာ (Browser ထဲမှာပဲ သိမ်းထားမှာဖြစ်ပြီး GitHub ပေါ် လုံးဝ မရောက်ပါ) -->
-    <div class="form-group" style="background: #eef2f7; padding: 15px; border-radius: 8px; border: 1px solid #d0d7de;">
-        <label style="color: #2D38AB;">🔑 GitHub Token ထည့်ရန်နေရာ</label>
-        <input type="password" id="githubToken" placeholder="ဒီနေရာမှာ ghp_... ကို paste ချပေးပါ" oninput="saveTokenLocally(this.value)">
-        <small style="color: #555; display: block; margin-top: 5px; font-size: 11px; line-height: 1.4;">
-            * တစ်ကြိမ်ပဲ ထည့်ရန်လိုပြီး သင့်ဖုန်းထဲမှာပဲ လုံခြုံစွာ မှတ်ထားပေးပါလိမ့်မည်။ GitHub စက်ရုပ်များ လုံးဝ သိနိုင်တော့မည် မဟုတ်ပါ။
-        </small>
+    <div class="card" id="uploadBox" style="display:none;">
+        <h2>Upload Book</h2>
+        <input type="text" id="imgUrl" placeholder="Image URL">
+        <input type="text" id="title" placeholder="Title">
+        <textarea id="desc" rows="5" placeholder="Description"></textarea>
+        <button onclick="upload()">Publish</button>
+        <div id="status"></div>
     </div>
 
-    <div class="form-group">
-        <label>စာအုပ် မျက်နှာဖုံး Image Direct URL (PNG/JPG)</label>
-        <input type="text" id="bookImage" placeholder="https://i.ibb.co/xxxxx/image.png">
-    </div>
+    <script>
+        let GITHUB_TOKEN = "";
+        const USER = "myanmarpagoda112-ux";
+        const REPO = "arr-t-2";
 
-    <div class="form-group">
-        <label>စာအုပ်နာမည်</label>
-        <input type="text" id="bookTitle" placeholder="စာအုပ်အမည် ရေးရန်">
-    </div>
-
-    <div class="form-group">
-        <label>စာအုပ်အကြောင်းအရာ/အညွှန်း</label>
-        <textarea id="bookDesc" placeholder="စာအုပ်အတွင်းပိုင်း ပါဝင်အကြောင်းအရာများ အစအဆုံး ရေးသားရန်..."></textarea>
-    </div>
-
-    <button class="btn-save" id="saveBtn" onclick="saveBook()">SAVE (သိမ်းဆည်းမည်)</button>
-</div>
-
-<script>
-    const GH_USER = "myanmarpagoda112-ux";
-    const GH_REPO = "arr-t-2";
-    const filepath = 'books.json';
-
-    // စာမျက်နှာ စဖွင့်ချင်း ဖုန်းထဲမှာ သိမ်းထားတဲ့ Token ရှိမရှိ စစ်ဆေးမယ်
-    window.onload = function() {
-        const savedToken = localStorage.getItem('my_gh_token');
-        if (savedToken) {
-            document.getElementById('githubToken').value = savedToken;
-            document.getElementById('tokenAlert').style.display = 'none';
-        } else {
-            document.getElementById('tokenAlert').style.display = 'block';
-        }
-    }
-
-    // Token ရိုက်ထည့်လိုက်တာနဲ့ ဖုန်းထဲမှာ အော်တိုသိမ်းမယ်
-    function saveTokenLocally(val) {
-        if(val.trim() !== "") {
-            localStorage.setItem('my_gh_token', val.trim());
-            document.getElementById('tokenAlert').style.display = 'none';
-        } else {
-            localStorage.removeItem('my_gh_token');
-            document.getElementById('tokenAlert').style.display = 'block';
-        }
-    }
-
-    async function saveBook() {
-        const GH_TOKEN = document.getElementById('githubToken').value.trim();
-        const imgUrl = document.getElementById('bookImage').value.trim();
-        const title = document.getElementById('bookTitle').value.trim();
-        const desc = document.getElementById('bookDesc').value;
-        const saveBtn = document.getElementById('saveBtn');
-        const adminBox = document.getElementById('adminBox');
-
-        if(!GH_TOKEN) {
-            alert("ကျေးဇူးပြု၍ GitHub Token အရင်ထည့်ပေးပါ!");
-            document.getElementById('githubToken').focus();
-            return;
-        }
-        if(!imgUrl || !title || !desc.trim()) {
-            alert("အချက်အလက်အားလုံး ပြည့်စုံအောင် ဖြည့်စွက်ပေးပါ!");
-            return;
+        function saveToken() {
+            GITHUB_TOKEN = document.getElementById('tokenInput').value;
+            if(GITHUB_TOKEN.startsWith("ghp_")) {
+                document.getElementById('loginBox').style.display = 'none';
+                document.getElementById('uploadBox').style.display = 'block';
+            } else { alert("Invalid Token!"); }
         }
 
-        saveBtn.innerText = "သိမ်းဆည်းနေပါသည်...";
-        adminBox.classList.add('loading');
+        async function upload() {
+            const status = document.getElementById('status');
+            const data = {
+                image: document.getElementById('imgUrl').value,
+                title: document.getElementById('title').value,
+                description: document.getElementById('desc').value,
+                timestamp: Date.now()
+            };
 
-        const url = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${filepath}?t=${new Date().getTime()}`;
-
-        let currentData = [];
-        let sha = null;
-
-        // ၁။ books.json နှင့် SHA ကို ဆွဲယူမယ်
-        try {
-            let response = await fetch(url, {
-                headers: { 
-                    'Authorization': `token ${GH_TOKEN}`,
-                    'Cache-Control': 'no-cache',
-                    'Pragma': 'no-cache'
-                }
-            });
+            const url = `https://api.github.com/repos/${USER}/${REPO}/contents/books.json`;
             
-            if(response.ok) {
-                let jsonRes = await response.json();
-                sha = jsonRes.sha;
-                
-                if (jsonRes.content) {
-                    let decodedContent = decodeURIComponent(escape(atob(jsonRes.content.replace(/\s/g, ''))));
-                    if (decodedContent.trim() !== "" && decodedContent.trim() !== "[]") {
-                        currentData = JSON.parse(decodedContent);
-                    }
-                }
-            } else if (response.status === 401 || response.status === 403) {
-                alert("သင်ထည့်ထားသော GitHub Token မှားယွင်းနေပါသည် သို့မဟုတ် ပိတ်ခံထားရပါသည်။ Token အသစ်တစ်ခုပြန်ယူပြီး အစားထိုးပေးပါ။");
-                resetState();
-                return;
-            }
-        } catch(e) {
-            console.log("No previous data. Creating new array.");
-        }
+            // Get current file
+            const res = await fetch(url, { headers: { "Authorization": `token ${GITHUB_TOKEN}` } });
+            const file = await res.json();
+            
+            let books = JSON.parse(atob(file.content));
+            books.push(data);
 
-        // ၂။ စာအုပ်အသစ်ထည့်မယ်
-        const newBook = {
-            image: imgUrl,
-            title: title,
-            description: desc,
-            date: new Date().toISOString()
-        };
-        currentData.push(newBook);
-
-        // ၃။ Base64 encode လုပ်မယ်
-        const updatedContentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(currentData, null, 2))));
-        
-        let bodyData = {
-            message: `Added new book: ${title}`,
-            content: updatedContentBase64
-        };
-        
-        if(sha) {
-            bodyData.sha = sha;
-        }
-
-        try {
-            let uploadRes = await fetch(`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${filepath}`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `token ${GH_TOKEN}`,
-                    'Content-Type': 'application/json',
-                    'Cache-Control': 'no-cache'
-                },
-                body: JSON.stringify(bodyData)
+            // Update file
+            await fetch(url, {
+                method: "PUT",
+                headers: { "Authorization": `token ${GITHUB_TOKEN}`, "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    message: "Update books",
+                    content: btoa(JSON.stringify(books, null, 2)),
+                    sha: file.sha
+                })
             });
-
-            if(uploadRes.ok) {
-                alert("စာအုပ်အား Database (GitHub) ထဲသို့ အောင်မြင်စွာ တင်ပြီးပါပြီ။");
-                document.getElementById('bookImage').value = '';
-                document.getElementById('bookTitle').value = '';
-                document.getElementById('bookDesc').value = '';
-            } else {
-                let errData = await uploadRes.json();
-                alert("Error: " + errData.message);
-            }
-        } catch(err) {
-            alert("Network Error: ချိတ်ဆက်မှု အဆင်မပြေပါ! Token ပြန်စစ်ပေးပါ။");
-        } finally {
-            resetState();
+            status.innerText = "Success!";
         }
-
-        function resetState() {
-            saveBtn.innerText = "SAVE (သိမ်းဆည်းမည်)";
-            adminBox.classList.remove('loading');
-        }
-    }
-</script>
+    </script>
 </body>
 </html>
