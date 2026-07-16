@@ -13,7 +13,6 @@
 
     <style>
         :root {
-            /* 🎨 Premium 8-Color Neon Gradient Blend */
             --pure-black: #000000;      
             --volt-green: #C6FF33;      
             --dark-gray: #121212;       
@@ -21,14 +20,17 @@
             --font-main: 'Roboto', sans-serif;
             --font-logo: 'Signika Negative', sans-serif;
             
-            /* Neon Accent Colors */
-            --neon-pink: #ff007f;
-            --neon-purple: #9d00ff;
-            --neon-blue: #00f0ff;
-            --neon-orange: #ff5d00;
+            /* 🌈 Neon 8 Colours Theme */
+            --neon-1: #FF3366; /* Pink */
+            --neon-2: #33FFF3; /* Cyan */
+            --neon-3: #B533FF; /* Purple */
+            --neon-4: #FFBD33; /* Orange */
+            --neon-5: #33FF57; /* Light Green */
+            --neon-6: #FF33F3; /* Magenta */
+            --neon-7: #3366FF; /* Blue */
+            --neon-8: #C6FF33; /* Volt Green */
         } 
 
-        /* 📱 Mo */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -42,7 +44,7 @@
             overflow-x: hidden; 
             background-color: var(--pure-black);
             color: var(--white);
-            transition: background-color 0.5s ease, color 0.5s ease;
+            transition: background-color 0.4s ease, color 0.4s ease;
         } 
 
         body {
@@ -52,7 +54,6 @@
             min-height: 100vh;
         } 
 
-        /* 📱 Phone Container Boundary */
         .phone-screen {
             width: 100%;
             max-width: 430px;
@@ -63,15 +64,15 @@
             position: relative;
             overflow-x: hidden;
             background-color: var(--pure-black);
-            transition: background-color 0.5s ease;
+            transition: background-color 0.4s ease;
         } 
 
-        /* 🎥 Page Transitions (Fade In/Out) */
+        /* 🎬 Page Fade Transitions */
         .page { 
             display: none; 
             width: 100%;
             opacity: 0;
-            transition: opacity 0.5s ease-in-out;
+            transition: opacity 0.4s ease-in-out;
         }
         .page.active { 
             display: flex;
@@ -107,7 +108,6 @@
             box-shadow: 0 0 20px rgba(198, 255, 51, 0.2);
         } 
 
-        /* 🎬 SMARTLINK 16:9 AD POPUP */
         .ad-popup-box {
             width: 100%;
             max-width: 380px;
@@ -187,17 +187,13 @@
             position: relative;
         } 
 
-        .site-top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-        }
-
         .site-logo-area {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 6px;
+            position: relative;
+            width: 100%;
         } 
 
         .logo-text-white {
@@ -220,47 +216,51 @@
             animation: pulseGlow 2s infinite alternate;
         } 
 
-        /* 🍔 Menu Dropdown UI */
-        .menu-container {
-            position: relative;
-        }
-
+        /* 🍔 Menu Icon (Top Right) */
         .menu-trigger-icon {
-            font-size: 1.8rem;
-            color: var(--volt-green);
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.6rem;
             cursor: pointer;
-            padding: 4px 8px;
+            color: var(--volt-green);
+            padding: 5px;
+            z-index: 100;
         }
 
-        .menu-dropdown-list {
+        /* 📜 Dropdown Menu Panel */
+        .nav-dropdown-panel {
             display: none;
             position: absolute;
-            top: 40px;
-            right: 0;
+            top: 60px;
+            right: 16px;
             background: var(--dark-gray);
-            border: 2px solid var(--volt-green);
-            border-radius: 8px;
-            min-width: 180px;
-            z-index: 100;
+            border: 1.5px solid var(--neon-2);
+            border-radius: 6px;
+            width: 200px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            z-index: 200;
             overflow: hidden;
         }
 
-        .menu-dropdown-item {
-            padding: 12px 16px;
-            font-size: 0.9rem;
-            font-weight: bold;
+        .nav-dropdown-panel button {
+            width: 100%;
+            background: transparent;
+            border: none;
             color: var(--white);
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 0.95rem;
+            font-weight: bold;
             cursor: pointer;
-            transition: background 0.2s;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .menu-dropdown-item:hover {
-            background: rgba(198, 255, 51, 0.2);
-            color: var(--volt-green);
+        .nav-dropdown-panel button:active {
+            background: rgba(255,255,255,0.1);
         }
 
         @keyframes pulseGlow {
@@ -314,7 +314,7 @@
         .tag-pill {
             background-color: #222222;
             color: var(--white);
-            border: 1px solid #333;
+            border: 1px solid #33;
             border-radius: 4px;
             padding: 6px 14px;
             font-size: 0.85rem;
@@ -341,6 +341,7 @@
             width: 100%;
         } 
 
+        /* 🌈 8 Multi-Neon Glowing Cards */
         .clean-video-card {
             background-color: var(--dark-gray);
             border-radius: 6px;
@@ -348,13 +349,18 @@
             cursor: pointer;
             display: flex;
             flex-direction: column;
-            border-bottom: 2px solid transparent;
             position: relative;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
         } 
 
-        .clean-video-card:active {
-            border-bottom-color: var(--volt-green);
-        } 
+        .clean-video-grid .clean-video-card:nth-child(8n+1) { border-bottom: 3px solid var(--neon-1); }
+        .clean-video-grid .clean-video-card:nth-child(8n+2) { border-bottom: 3px solid var(--neon-2); }
+        .clean-video-grid .clean-video-card:nth-child(8n+3) { border-bottom: 3px solid var(--neon-3); }
+        .clean-video-grid .clean-video-card:nth-child(8n+4) { border-bottom: 3px solid var(--neon-4); }
+        .clean-video-grid .clean-video-card:nth-child(8n+5) { border-bottom: 3px solid var(--neon-5); }
+        .clean-video-grid .clean-video-card:nth-child(8n+6) { border-bottom: 3px solid var(--neon-6); }
+        .clean-video-grid .clean-video-card:nth-child(8n+7) { border-bottom: 3px solid var(--neon-7); }
+        .clean-video-grid .clean-video-card:nth-child(8n+8) { border-bottom: 3px solid var(--neon-8); }
 
         .thumb-wrapper {
             position: relative;
@@ -402,10 +408,6 @@
         .favorite-btn-action.is-fav {
             color: #ff3366;
             text-shadow: 0 0 5px rgba(255, 51, 102, 0.6);
-        } 
-
-        .favorite-btn-action:active {
-            transform: scale(1.2);
         } 
 
         .meta-description-area {
@@ -511,45 +513,43 @@
             padding-left: 8px;
         } 
 
-        /* ==================== 8-COLOR NEON DYNAMIC ADS CARD ==================== */
+        /* ==================== 💎 NEW ADVERTISEMENT CARD UI ==================== */
         .clean-vip-banner {
-            background: linear-gradient(45deg, #000000, #1a1a1a);
-            border: 3px solid transparent;
-            border-image: linear-gradient(45deg, #ff0055, #00ffaa, #00aaff, #ffb700, #9900ff, #ff5d00, #c6ff33, #ff007f) 1;
-            box-shadow: 0 0 15px rgba(198, 255, 51, 0.2);
+            background-color: var(--dark-gray);
+            border: 2px solid var(--neon-4);
             border-radius: 8px;
             padding: 16px;
             text-align: center;
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 12px;
+            box-shadow: 0 0 15px rgba(255, 189, 51, 0.2);
         } 
 
         .vip-banner-desc {
             color: var(--white);
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             line-height: 1.6;
-            font-weight: bold;
-            text-shadow: 0 0 5px rgba(255,255,255,0.1);
+            font-weight: 500;
+            text-align: justify;
         } 
 
         .vip-direct-action-btn {
-            background: linear-gradient(45deg, #C6FF33, #00f0ff);
+            background-color: var(--neon-4);
             color: var(--pure-black);
             border: none;
-            border-radius: 6px;
-            padding: 14px 18px;
-            font-size: 1.1rem;
-            font-weight: 800;
+            border-radius: 4px;
+            padding: 12px 18px;
+            font-size: 1.05rem;
+            font-weight: bold;
             text-decoration: none;
             display: block;
             cursor: pointer;
-            box-shadow: 0 4px 10px rgba(198, 255, 51, 0.4);
-            transition: transform 0.2s;
+            transition: opacity 0.2s;
         } 
 
         .vip-direct-action-btn:active {
-            transform: scale(0.98);
+            opacity: 0.9;
         } 
 
         .section-header-title {
@@ -571,152 +571,92 @@
             color: #666;
         }
 
-        /* ==================== 📖 BLUE BOOK (LIGHT MODE) STYLING ==================== */
-        body.light-theme {
-            background-color: #f5f5f7;
-            color: #1d1d1f;
+        /* ==================== 📖 BLUE BOOK PAGE (WHITE THEME) ==================== */
+        .white-theme-body {
+            background-color: #f5f5f7 !important;
+            color: #111111 !important;
         }
 
-        body.light-theme .phone-screen {
-            background-color: #ffffff;
+        .white-theme-screen {
+            background-color: #ffffff !important;
         }
 
-        body.light-theme .site-header {
-            background-color: #ffffff;
-            border-bottom: 2px solid #000000;
-        }
-
-        body.light-theme .logo-text-white {
-            color: #000000;
-        }
-
-        body.light-theme .logo-text-green {
-            background-color: #000000;
-            color: #ffffff;
-            animation: none;
-        }
-
-        .book-grid-layout {
+        .book-grid-container {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 12px;
-            padding: 12px 8px;
+            padding: 16px 8px;
+            width: 100%;
         }
 
-        .book-item-card {
+        .book-card {
             background: #ffffff;
-            border: 2px solid #000000; /* Strict Black Boundary Frame */
+            border: 2px solid #000000; /* Black Border Frame */
             border-radius: 8px;
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            box-shadow: 2px 2px 0px #000000;
             cursor: pointer;
-            transition: transform 0.2s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.06);
         }
 
-        body.light-theme .book-item-card {
-            background: #fafafa;
-        }
-
-        .book-cover-box {
+        .book-cover {
             width: 100%;
             aspect-ratio: 3/4;
             background: #eaeaea;
-            border-bottom: 2px solid #000000;
+            overflow: hidden;
         }
 
-        .book-cover-box img {
+        .book-cover img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
-        .book-info-box {
-            padding: 8px;
+        .book-info {
+            padding: 10px;
             display: flex;
             flex-direction: column;
             gap: 4px;
+            background: #ffffff;
         }
 
-        .book-title-text {
-            font-size: 0.85rem;
+        .book-title {
+            font-size: 0.9rem;
             font-weight: bold;
             color: #000000;
             line-height: 1.3;
+            height: 2.6em;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
         }
 
-        /* 📑 Book Reader View Component */
-        .book-read-content-pane {
-            padding: 16px;
-            color: #333333;
-            font-size: 1.05rem;
-            line-height: 1.8;
-            background: #fff;
-            border-radius: 6px;
-            border: 2px solid #000;
-            white-space: pre-line;
-            text-align: justify;
-        }
-
-        /* ==================== 🛠️ ADMIN CONTROL PANEL UI ==================== */
-        .admin-dashboard-container {
+        /* 📖 Book Detail View */
+        .book-read-section {
             padding: 16px;
             display: flex;
             flex-direction: column;
             gap: 16px;
-            background: #fff;
-            color: #000;
-            min-height: 100vh;
+            background: #ffffff;
+            color: #111111;
         }
 
-        .admin-header-title {
-            font-size: 1.5rem;
+        .book-detail-title {
+            font-size: 1.3rem;
             font-weight: bold;
-            border-bottom: 2px solid #000;
+            color: #000000;
+            border-bottom: 2px solid #000000;
             padding-bottom: 8px;
-            text-align: center;
         }
 
-        .form-input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .form-input-group label {
-            font-size: 0.85rem;
-            font-weight: bold;
-        }
-
-        .form-input-group input, .form-input-group textarea {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #000;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            outline: none;
-        }
-
-        .form-input-group textarea {
-            min-height: 150px;
-            resize: vertical;
-        }
-
-        .admin-action-btn {
-            background: #000;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            padding: 12px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-
-        .admin-action-btn:active {
-            opacity: 0.8;
+        .book-detail-content {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            text-align: justify;
+            white-space: pre-line;
+            color: #222222;
         }
     </style>
 </head>
@@ -741,22 +681,19 @@
     </div>
 </div> 
 
-<div class="phone-screen"> 
+<div class="phone-screen" id="appScreen"> 
 
     <div id="dashboardPage" class="page active">
         <div class="site-header">
-            <div class="site-top-bar">
-                <div class="site-logo-area">
-                    <span class="logo-text-white">BURMA</span>
-                    <span class="logo-text-green">HUBB</span>
-                </div> 
-                <div class="menu-container">
-                    <div class="menu-trigger-icon" onclick="toggleMenuDropdown(event)">≡</div>
-                    <div class="menu-dropdown-list" id="menuDropdown">
-                        <div class="menu-dropdown-item" onclick="navigateViews('bookGridPage')">📖 အပြာစာအုပ်ဖတ်ရန်</div>
-                    </div>
+            <div class="site-logo-area">
+                <span class="logo-text-white">BURMA</span>
+                <span class="logo-text-green">HUBB</span>
+                <div class="menu-trigger-icon" onclick="toggleMenuDropdown(event)">📊</div>
+                
+                <div class="nav-dropdown-panel" id="menuDropdown">
+                    <button onclick="switchView('bookPage')">📖 အပြာစာအုပ်ဖတ်ရန်</button>
                 </div>
-            </div>
+            </div> 
 
             <div class="search-wrapper">
                 <input type="text" id="searchField" class="search-input-field" placeholder="Search videos...">
@@ -795,7 +732,7 @@
                 <div class="vip-banner-desc">
                     ကြော်ငြာအပ်လိုသည့် မိတ်ဆွေများ မိမိတို့၏ လုပ်ငန်းများကို ကြော်ငြာလာရောက် အပ်နှံနိုင်ပါပြီ! စလော့ / 2D3D / တစ်ခြားသော လုပ်ငန်းကြော်ငြာများ လာရောက်အပ်နှံနိုင်သည်
                 </div>
-                <a href="https://t.me/MmpHubAds?text=%E1%80%A1%E1%80%80%E1%80%AD%E1%80%AF%E1%80%B1%E1%80%B7%20%E1%80%9C%E1%80%AF%E1%80%94%E1%80%BA%E1%80%84%E1%80%Access%E1%80%B1%E1%80%8C%E1%80%B1%E1%80%AC%E1%80%8င%E1%80%BA%E1%80%AC%E1%80%B1%E1%80%9လေး%E1%80%91%E1%80%animals%E1%80%B2%E1%80%8Cold%E1%80%B7%E1%80%80%E1%80%B3%E1%80%84%E1%80%BA%E1%80%9C%E1%80%AD%E1%80%AF%E1%80%B7%E1%80%94%E1%80%AC%E1%80%B2%E1%80%BB%E1%80%9约定" target="_blank" class="vip-direct-action-btn">
+                <a href="https://t.me/MmpHubAds?text=အကိုရေ%20လုပ်ငန်းကြော်ငြာလေးထည့်ချင်လို့ပါ" target="_blank" class="vip-direct-action-btn">
                     ကြော်ငြာအပ်မည်
                 </a>
             </div> 
@@ -805,55 +742,28 @@
         </div>
     </div> 
 
-    <div id="bookGridPage" class="page">
-        <div class="site-header">
-            <div class="site-top-bar">
-                <button class="back-navigation-btn" onclick="navigateViews('dashboardPage')" style="color:#000; border-color:#000; background:#fff;">
-                    ◀ ဗီဒီယိုကြည့်ရန် ပြန်သွားမည်
-                </button>
+    <div id="bookPage" class="page">
+        <div class="site-header" style="background:#ffffff; border-bottom:2px solid #000000; color:#000000;">
+            <div class="site-logo-area">
+                <span class="logo-text-white" style="color:#000000;">BURMA</span>
+                <span class="logo-text-green" style="background:#000000; color:#ffffff;">BOOKS</span>
+                <div class="menu-trigger-icon" onclick="switchView('dashboardPage')" style="color:#000000; font-size:1rem; font-weight:bold;">🏠 HOME</div>
             </div>
-            <div class="section-header-title" style="color:#000; border-color:#000; margin-top:4px;">လတ်တလောထွက်ထားသော စာအုပ်များ</div>
         </div>
-        <div class="book-grid-layout" id="bookCatalogGrid">
+        
+        <div class="book-grid-container" id="booksCatalogGrid">
             </div>
     </div>
 
-    <div id="bookReaderPage" class="page" style="background:#fff;">
+    <div id="bookReadPage" class="page">
         <div class="player-inner-section">
-            <button class="back-navigation-btn" onclick="navigateViews('bookGridPage')" style="color:#000; border-color:#000; background:#fff;">
-                ◀ စာအုပ်စာရင်းသို့ ပြန်သွားမည်
+            <button class="back-navigation-btn" onclick="switchView('bookPage')" style="background:#ffffff; color:#000; border:1px solid #000;">
+                ◀ စာအုပ်စင်သို့ ပြန်သွားရန်
             </button>
-            <div class="section-header-title" id="readViewBookTitle" style="color:#000; border-color:#000;">Book Title</div>
-            <div class="book-read-content-pane" id="readViewBookContent">
-                Book Storyline Text Content Body...
+            <div class="book-read-section">
+                <div class="book-detail-title" id="readBookTitle">စာအုပ်ခေါင်းစဉ်</div>
+                <div class="book-detail-content" id="readBookContent">စာသားများ...</div>
             </div>
-        </div>
-    </div>
-
-    <div id="adminPanelPage" class="page">
-        <div class="admin-dashboard-container">
-            <div class="admin-header-title">BurmaHubb Book Content Manager</div>
-            
-            <div class="form-input-group">
-                <label>စာအုပ်မျက်နှာဖုံး Image URL (Direct PNG/JPG Link From ImgBB)</label>
-                <input type="text" id="adminInpCover" placeholder="https://i.ibb.co/.../image.png">
-            </div>
-
-            <div class="form-input-group">
-                <label>စာအုပ်အမည် (Book Title)</label>
-                <input type="text" id="adminInpTitle" placeholder="စာအုပ်ခေါင်းစဉ် ရေးရန်...">
-            </div>
-
-            <div class="form-input-group">
-                <label>စာအုပ်ပါဝင်သည့်အကြောင်းအရာ (Full Content Story)</label>
-                <textarea id="adminInpContent" placeholder="စာအုပ်တစ်အုပ်လုံး၏ စာသားများကို စိတ်ကြိုက်ရှည်လျားစွာ ရေးသားနိုင်ပါသည်..."></textarea>
-            </div>
-
-            <button class="admin-action-btn" onclick="handleAdminSaveBook()">SAVE NEW BOOK DATA</button>
-            
-            <button class="back-navigation-btn" onclick="navigateViews('dashboardPage')" style="margin-top:20px; width:100%; justify-content:center;">
-                Exit Admin Panel
-            </button>
         </div>
     </div>
 
@@ -866,39 +776,30 @@
     let isFetchingMore = false;
     let currentActiveView = "dashboard"; 
 
-    // Static Mock Data Storage for Default Books List
-    const initialDefaultBooks = [
+    // Static Sample Book Data
+    const defaultBooks = [
         {
+            title: "နွေဦးအလွမ်း ဇာတ်လမ်း",
             cover: "https://i.ibb.co/Wpf016Xb/New-Project-116-370-BD56.png",
-            title: "ချစ်ကမ္ဘာမြေပုံပြင်",
-            content: "အခန်း (၁) \nဤနေရာတွင် စိတ်ဝင်စားဖွယ်ရာ ဇာတ်လမ်းအကြောင်းအရာများကို အသေးစိတ် ဖတ်ရှုနိုင်ပါသည်။"
+            content: "ဒါကတော့ နွေဦးအလွမ်း အပြာစာအုပ်ရဲ့ စမ်းသပ်စာသားဖြစ်ပါတယ်။\nစာဖတ်သူများ စိတ်ကျေနပ်မှုရရှိစေရန် အကောင်းဆုံး ရေးသားတင်ဆက်ထားပါသည်။"
         }
     ];
 
-    // Check Routing Link Extension Hooks for URL parsing (/admin.html emulation fallback)
-    if(window.location.hash === "#/admin.html" || window.location.pathname.endsWith('/admin.html')) {
-        window.addEventListener('DOMContentLoaded', () => navigateViews('adminPanelPage'));
+    // Setup LocalStorage for Books
+    if (!localStorage.getItem('burmaHubBooks')) {
+        localStorage.setItem('burmaHubBooks', JSON.stringify(defaultBooks));
     }
 
-    // Initialize Local Engine Storages
     if (!sessionStorage.getItem('seenVideoIds')) {
         sessionStorage.setItem('seenVideoIds', JSON.stringify([]));
     }
     if (!localStorage.getItem('userFavoriteVideos')) {
         localStorage.setItem('userFavoriteVideos', JSON.stringify([]));
-    }
-    if (!localStorage.getItem('appBlueBookDatabase')) {
-        localStorage.setItem('appBlueBookDatabase', JSON.stringify(initialDefaultBooks));
-    }
+    } 
 
     document.addEventListener("DOMContentLoaded", () => {
         loadPortalVideos(searchKeyword, dashboardPageNum, 'mainVideoGrid', false);
-        renderBookCatalog();
-
-        // Close dropdown menu clicking anywhere outside UI boundary box
-        document.addEventListener('click', () => {
-            document.getElementById('menuDropdown').style.display = 'none';
-        });
+        renderBooksCatalog();
 
         document.getElementById('searchField').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
@@ -907,8 +808,13 @@
             }
         }); 
 
+        // Close dropdown when clicking outside
+        document.addEventListener('click', () => {
+            document.getElementById('menuDropdown').style.display = 'none';
+        });
+
         window.addEventListener('scroll', () => {
-            if (searchKeyword === "___favorites___" || currentActiveView === "books" || currentActiveView === "admin") return; 
+            if (searchKeyword === "___favorites___" || currentActiveView === "bookPage" || currentActiveView === "bookReadPage") return; 
 
             if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
                 if (!isFetchingMore) {
@@ -926,121 +832,80 @@
         });
     }); 
 
+    function toggleMenuDropdown(e) {
+        e.stopPropagation();
+        const drop = document.getElementById('menuDropdown');
+        drop.style.display = (drop.style.display === 'block') ? 'none' : 'block';
+    }
+
+    /* 🔄 SPA Switcher with Smooth Fade In/Out and Dynamic Theming */
+    function switchView(pageId) {
+        const activePage = document.querySelector('.page.active');
+        const targetPage = document.getElementById(pageId);
+        const bodyEl = document.body;
+        const screenEl = document.getElementById('appScreen');
+
+        if(activePage) {
+            activePage.style.opacity = '0';
+            setTimeout(() => {
+                activePage.classList.remove('active');
+                
+                // Theme Transformation Logic
+                if (pageId === 'bookPage' || pageId === 'bookReadPage') {
+                    bodyEl.classList.add('white-theme-body');
+                    screenEl.classList.add('white-theme-screen');
+                    currentActiveView = pageId;
+                } else {
+                    bodyEl.classList.remove('white-theme-body');
+                    screenEl.classList.remove('white-theme-screen');
+                    currentActiveView = (pageId === 'dashboardPage') ? 'dashboard' : 'player';
+                }
+
+                targetPage.classList.add('active');
+                setTimeout(() => {
+                    targetPage.style.opacity = '1';
+                }, 50);
+            }, 300);
+        }
+    }
+
+    function renderBooksCatalog() {
+        const grid = document.getElementById('booksCatalogGrid');
+        grid.innerHTML = "";
+        const books = JSON.parse(localStorage.getItem('burmaHubBooks'));
+
+        books.forEach((book, idx) => {
+            const card = document.createElement('div');
+            card.className = 'book-card';
+            card.onclick = () => openBookReader(idx);
+            card.innerHTML = `
+                <div class="book-cover">
+                    <img src="${book.cover}" onerror="this.src='https://via.placeholder.com/150x200?text=No+Cover'">
+                </div>
+                <div class="book-info">
+                    <div class="book-title">${book.title}</div>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    function openBookReader(index) {
+        const books = JSON.parse(localStorage.getItem('burmaHubBooks'));
+        const book = books[index];
+        document.getElementById('readBookTitle').innerText = book.title;
+        document.getElementById('readBookContent').innerText = book.content;
+        switchView('bookReadPage');
+        window.scrollTo(0,0);
+    }
+
     function closeNoticePopup() {
         document.getElementById('noticePopup').style.display = 'none';
     } 
 
-    function toggleMenuDropdown(e) {
-        e.stopPropagation();
-        const dropdown = document.getElementById('menuDropdown');
-        dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
-    }
-
-    /* 🎥 Unified View Switching Engine Core With Crossfade Effects */
-    function navigateViews(targetPageId) {
-        const pages = document.querySelectorAll('.page');
-        const activePage = document.querySelector('.page.active');
-        
-        // Handle global color themes switching according to views
-        if (targetPageId === 'bookGridPage' || targetPageId === 'bookReaderPage' || targetPageId === 'adminPanelPage') {
-            document.body.classList.add('light-theme');
-            currentActiveView = "books";
-        } else {
-            document.body.classList.remove('light-theme');
-            if (targetPageId === 'dashboardPage') currentActiveView = "dashboard";
-            if (targetPageId === 'playerPage') currentActiveView = "player";
-        }
-
-        if (activePage) {
-            activePage.style.opacity = 0;
-            setTimeout(() => {
-                activePage.classList.remove('active');
-                activePage.style.display = 'none';
-                
-                const targetPage = document.getElementById(targetPageId);
-                targetPage.style.display = 'flex';
-                setTimeout(() => {
-                    targetPage.classList.add('active');
-                    targetPage.style.opacity = 1;
-                }, 50);
-            }, 300); // Wait for transition fade-out duration bound
-        } else {
-            const targetPage = document.getElementById(targetPageId);
-            targetPage.style.display = 'flex';
-            targetPage.classList.add('active');
-            targetPage.style.opacity = 1;
-        }
-        window.scrollTo(0, 0);
-    }
-
-    /* 📖 Render Books Grid Lists From Database Matrix array */
-    function renderBookCatalog() {
-        const catalogContainer = document.getElementById('bookCatalogGrid');
-        catalogContainer.innerHTML = "";
-        const books = JSON.parse(localStorage.getItem('appBlueBookDatabase')) || [];
-
-        if(books.length === 0) {
-            catalogContainer.innerHTML = `<div class="system-msg" style="color:#666;">မည်သည့်စာအုပ်မှ မရှိသေးပါ။</div>`;
-            return;
-        }
-
-        books.forEach((book, idx) => {
-            const card = document.createElement('div');
-            card.className = "book-item-card";
-            card.onclick = () => launchBookReader(book.title, book.content);
-            card.innerHTML = `
-                <div class="book-cover-box">
-                    <img src="${book.cover}" onerror="this.src='https://i.ibb.co/Wpf016Xb/New-Project-116-370-BD56.png'" alt="Cover">
-                </div>
-                <div class="book-info-box">
-                    <div class="book-title-text">${book.title}</div>
-                </div>
-            `;
-            catalogContainer.appendChild(card);
-        });
-    }
-
-    function launchBookReader(title, content) {
-        document.getElementById('readViewBookTitle').innerText = title;
-        document.getElementById('readViewBookContent').innerText = content;
-        navigateViews('bookReaderPage');
-    }
-
-    /* 🛠️ Admin Action Handlers */
-    function handleAdminSaveBook() {
-        const coverLink = document.getElementById('adminInpCover').value.trim();
-        const titleText = document.getElementById('adminInpTitle').value.trim();
-        const contentText = document.getElementById('adminInpContent').value.trim();
-
-        if(!coverLink || !titleText || !contentText) {
-            alert('ကျေးဇူးပြု၍ ကွက်လပ်အားလုံးကို ဖြည့်စွက်ပေးပါရန်!');
-            return;
-        }
-
-        let database = JSON.parse(localStorage.getItem('appBlueBookDatabase')) || [];
-        database.unshift({
-            cover: coverLink,
-            title: titleText,
-            content: contentText
-        });
-
-        localStorage.setItem('appBlueBookDatabase', JSON.stringify(database));
-        alert('စာအုပ်အသစ်ကို အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ!');
-        
-        // Reset Admin Input fields
-        document.getElementById('adminInpCover').value = "";
-        document.getElementById('adminInpTitle').value = "";
-        document.getElementById('adminInpContent').value = "";
-
-        renderBookCatalog();
-        navigateViews('bookGridPage');
-    }
-
-    // Handle Smartlink Display & Trigger Fav Filter
     function handleFavCategoryClick(element) {
         document.querySelectorAll('.tag-pill').forEach(btn => btn.classList.remove('active'));
         element.classList.add('active'); 
-
         const adPopup = document.getElementById('adPopup');
         const adFrame = document.getElementById('adSmartlinkFrame');
         const timerText = document.getElementById('adTimerText');
@@ -1089,7 +954,6 @@
         searchKeyword = "___favorites___";
         const targetGrid = document.getElementById('mainVideoGrid');
         targetGrid.innerHTML = "";
-        
         let favorites = JSON.parse(localStorage.getItem('userFavoriteVideos')); 
 
         if (favorites.length === 0) {
@@ -1101,7 +965,6 @@
             const card = document.createElement('div');
             card.className = 'clean-video-card';
             card.onclick = () => openVideoPlayer(video.embed, video.title); 
-
             card.innerHTML = `
                 <div class="thumb-wrapper">
                     <img src="${video.thumb}" alt="Thumb">
@@ -1122,7 +985,6 @@
 
     async function loadPortalVideos(query, pageNum, containerId, appendMode = false) {
         if (query === "___favorites___") return; 
-
         const targetGrid = document.getElementById(containerId);
         
         if (!appendMode) {
@@ -1161,7 +1023,6 @@
                         const rawViews = video.views || Math.floor(Math.random() * 450) + 25;
                         const formattedViews = rawViews >= 1000 ? (rawViews / 1000).toFixed(1) + 'K' : rawViews; 
                         const durationStr = `${video.length_min}:${video.length_sec < 10 ? '0' + video.length_sec : video.length_sec}`; 
-
                         const isAlreadyFav = favorites.some(item => item.id === video.id); 
 
                         const minimalVideoData = {
@@ -1176,7 +1037,6 @@
                         const card = document.createElement('div');
                         card.className = 'clean-video-card';
                         card.onclick = () => openVideoPlayer(video.embed, video.title); 
-
                         card.innerHTML = `
                             <div class="thumb-wrapper">
                                 <img src="${video.default_thumb.src}" alt="Thumb">
@@ -1211,7 +1071,6 @@
                     }
                     return;
                 }
-                
                 isFetchingMore = false;
             } else {
                 if (!appendMode) {
@@ -1244,7 +1103,11 @@
     } 
 
     function openVideoPlayer(embedUrl, title) {
-        navigateViews('playerPage');
+        document.getElementById('dashboardPage').classList.remove('active');
+        document.getElementById('bookPage').classList.remove('active');
+        document.getElementById('bookReadPage').classList.remove('active');
+        switchView('playerPage');
+
         document.getElementById('iframeWrapper').innerHTML = `
             <iframe src="${embedUrl}" allowfullscreen scrolling="no"></iframe>
         `;
@@ -1252,10 +1115,12 @@
 
         playerRelatedPageNum = Math.floor(Math.random() * 5) + 6;
         loadPortalVideos(searchKeyword, playerRelatedPageNum, 'relatedVideoGrid', false);
+        window.scrollTo(0, 0);
     } 
 
     function returnToDashboard() {
-        navigateViews('dashboardPage');
+        document.getElementById('playerPage').classList.remove('active');
+        switchView('dashboardPage');
         document.getElementById('iframeWrapper').innerHTML = ""; 
         document.getElementById('relatedVideoGrid').innerHTML = ""; 
 
@@ -1267,8 +1132,6 @@
         }
     }
 </script> 
-
 <script src="https://pl30365128.effectivecpmnetwork.com/8f/ca/73/8fca7385f9007d1f3a68c2f30a6b69fc.js"></script> 
-
 </body>
 </html>
