@@ -120,7 +120,7 @@
     async function saveBook() {
         const imgUrl = document.getElementById('bookImage').value.trim();
         const title = document.getElementById('bookTitle').value.trim();
-        const desc = document.getElementById('bookDesc').value; // .trim() ဖယ်ပြီး raw text ယူမယ်
+        const desc = document.getElementById('bookDesc').value;
         const saveBtn = document.getElementById('saveBtn');
         const adminBox = document.getElementById('adminBox');
 
@@ -133,50 +133,57 @@
         adminBox.classList.add('loading');
 
         const filepath = 'books.json';
-        const url = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${filepath}`;
+        
+        // Cache မငြိအောင် Query Parameter အဖြစ် timestamp ထည့်ပြီး API ဆွဲပါတယ်
+        const url = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${filepath}?t=${new Date().getTime()}`;
 
         let currentData = [];
         let sha = "";
 
-        // ၁။ books.json အဟောင်းကို ဆွဲယူမယ်
+        // ၁။ နောက်ဆုံး SHA နှင့် books.json အဟောင်းကို အသစ်ဆုံး Cache-free API နဲ့ ဆွဲယူမယ်
         try {
             let response = await fetch(url, {
                 headers: { 
                     'Authorization': `token ${GH_TOKEN}`,
-                    'Cache-Control': 'no-cache'
+                    'Cache-Control': 'no-cache',
+                    'Pragma': 'no-cache'
                 }
             });
             
             if(response.ok) {
                 let jsonRes = await response.json();
-                sha = jsonRes.sha;
+                sha = jsonRes.sha; // ဒီ sha ကုဒ်ကို သေချာပေါက် ရအောင်ယူရပါမယ်
                 let decodedContent = decodeURIComponent(escape(atob(jsonRes.content)));
                 currentData = JSON.parse(decodedContent);
             }
         } catch(e) {
-            console.log("Starting a new configuration.");
+            console.log("Starting a new config or file does not exist yet.");
         }
 
-        // ၂။ Enter တွေပါတဲ့ စာသားရှည်ကြီးကို JSON Safe ဖြစ်အောင် ပြင်ဆင်ပြီး စာအုပ်အသစ် အနေနဲ့ ထည့်မယ်
+        // ၂။ စာအုပ်အသစ်ထည့်မယ်
         const newBook = {
             image: imgUrl,
             title: title,
-            description: desc, // raw text အတိုင်းထည့်ပါမယ် (JSON.stringify က Enter တွေကို အလိုအလျောက် \n ပြောင်းပေးသွားမှာပါ)
+            description: desc,
             date: new Date().toISOString()
         };
         currentData.push(newBook);
 
-        // ၃။ UTF-8 အမှန်ရဖို့နဲ့ Safe ဖြစ်ဖို့ Stringify အဆင့်
-        const updatedContentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(currentData))));
+        // ၃။ Base64 encode လုပ်မယ်
+        const updatedContentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(currentData, null, 2))));
         
         let bodyData = {
             message: `Added new book: ${title}`,
             content: updatedContentBase64
         };
-        if(sha !== "") bodyData.sha = sha;
+        
+        // ဖိုင်ရှိပြီးသားဖြစ်တဲ့အတွက် SHA ကို သေချာပေါက် ထည့်ပေးရပါမယ်
+        if(sha !== "") {
+            bodyData.sha = sha;
+        }
 
         try {
-            let uploadRes = await fetch(url, {
+            let uploadRes = await fetch(`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${filepath}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `token ${GH_TOKEN}`,
