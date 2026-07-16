@@ -1,5 +1,368 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BurmaRHubb.COM</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,500&family=Signika+Negative:wght@600;700&display=swap" rel="stylesheet"> 
+
+    <script src="https://pl30365127.effectivecpmnetwork.com/a6/25/48/a62548ab65dbd153162c88be71e77616.js"></script>
+
+    <style>
+        :root {
+            --pure-black: #000000;      
+            --dark-gray: #121212;       
+            --white: #ffffff;
+            --font-main: 'Roboto', sans-serif;
+            --font-logo: 'Signika Negative', sans-serif;
+            --holo-gradient: linear-gradient(90deg, #2D38AB 0%, #4242A6 15%, #292B37 30%, #88EFEC 45%, #71EDEF 60%, #EFF1E6 75%, #ECE161 88%, #DA6D59 100%);
+            --holo-solid: #88EFEC;
+        } 
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-main);
+            -webkit-tap-highlight-color: transparent;
+        } 
+
+        html, body {
+            width: 100%;
+            overflow-x: hidden; 
+            background-color: var(--pure-black);
+            color: var(--white);
+            transition: background-color 0.5s ease, color 0.5s ease;
+        } 
+
+        body.novel-mode-active {
+            background-color: #f7f9fa !important;
+            color: #1a1a1a !important;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        } 
+
+        .phone-screen {
+            width: 100%;
+            max-width: 430px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+            overflow-x: hidden;
+        } 
+
+        .page { 
+            display: none; 
+            width: 100%;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out;
+        }
+        .page.active { 
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            opacity: 1;
+        } 
+
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.93);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 20px;
+        } 
+        .popup-box {
+            width: 100%;
+            max-width: 360px;
+            background: var(--dark-gray);
+            border: 2px solid transparent;
+            border-image: var(--holo-gradient) 1;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+        }
+        .ad-popup-box {
+            width: 100%;
+            max-width: 380px;
+            background: var(--dark-gray);
+            border: 2px solid transparent;
+            border-image: var(--holo-gradient) 1;
+            border-radius: 12px;
+            padding: 0;
+            overflow: hidden;
+            text-align: center;
+        }
+        .ad-frame-wrapper { width: 100%; aspect-ratio: 16/9; background: #000; position: relative; }
+        .ad-frame-wrapper iframe { width: 100%; height: 100%; border: none; }
+        .ad-timer-bar { background: var(--pure-black); color: var(--white); padding: 8px; font-size: 0.85rem; font-weight: bold; border-top: 1px solid #222; }
+        .popup-title { font-family: var(--font-logo); font-size: 1.8rem; background: var(--holo-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 12px; }
+        .popup-text { font-size: 0.9rem; color: var(--white); line-height: 1.6; margin-bottom: 24px; } 
+        .popup-btn { background: var(--holo-gradient); color: var(--white); border: none; border-radius: 6px; padding: 12px 32px; font-size: 1rem; font-weight: bold; cursor: pointer; width: 100%; } 
+
+        .site-header {
+            background-color: var(--dark-gray);
+            position: relative;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+        } 
+        .site-header::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: var(--holo-gradient); }
+        
+        .site-logo-area {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        } 
+        .logo-title-group { display: flex; align-items: center; gap: 6px; }
+        .logo-text-white { font-family: var(--font-logo); font-size: 2.1rem; font-weight: bold; color: var(--white); letter-spacing: -0.5px; } 
+        .logo-text-green { font-family: var(--font-logo); font-size: 2.1rem; font-weight: bold; color: var(--white); background: var(--holo-gradient); padding: 0px 10px; border-radius: 4px; letter-spacing: -0.5px; } 
+        
+        .menu-nav-trigger {
+            font-size: 1.8rem;
+            color: var(--white);
+            cursor: pointer;
+            padding: 4px;
+            z-index: 100;
+        }
+        .header-dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 60px;
+            right: 16px;
+            background: var(--dark-gray);
+            border: 1px solid #333;
+            border-radius: 6px;
+            width: 200px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            z-index: 999;
+            overflow: hidden;
+        }
+        .menu-item-link {
+            padding: 14px 16px;
+            font-size: 0.95rem;
+            color: var(--white);
+            font-weight: bold;
+            cursor: pointer;
+            border-bottom: 1px solid #222;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .menu-item-link:active { background: #222; color: var(--holo-solid); }
+
+        .search-wrapper { position: relative; width: 100%; } 
+        .search-input-field { width: 100%; padding: 12px 50px 12px 14px; border: 1px solid #333; border-radius: 4px; font-size: 0.95rem; outline: none; background: var(--pure-black); color: var(--white); } 
+        .search-input-field:focus { border-color: var(--holo-solid); } 
+        .search-submit-icon { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 1.2rem; cursor: pointer; color: var(--holo-solid); } 
+        .tags-nav-bar { display: flex; align-items: center; gap: 6px; overflow-x: auto; white-space: nowrap; } 
+        .tag-pill { background-color: #222; color: var(--white); border: 1px solid #333; border-radius: 4px; padding: 6px 14px; font-size: 0.85rem; font-weight: bold; cursor: pointer; } 
+        .tag-pill.active { background: var(--holo-gradient); color: var(--white); border: none; padding: 7px 15px; } 
+
+        .video-container-grid { padding: 4px 8px; width: 100%; } 
+        .clean-video-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; width: 100%; } 
+        .clean-video-card { background-color: var(--dark-gray); border-radius: 6px; overflow: hidden; cursor: pointer; display: flex; flex-direction: column; position: relative; } 
+        .clean-video-card::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: transparent; }
+        .clean-video-card:active::after { background: var(--holo-gradient); } 
+        .thumb-wrapper { position: relative; width: 100%; aspect-ratio: 16/10; background-color: #050505; } 
+        .thumb-wrapper img { width: 100%; height: 100%; object-fit: cover; display: block; } 
+        .video-duration-badge { position: absolute; bottom: 4px; right: 4px; background-color: rgba(0,0,0,0.85); color: var(--holo-solid); font-size: 0.65rem; font-weight: bold; padding: 2px 4px; border-radius: 2px; } 
+        .favorite-btn-action { position: absolute; top: 6px; right: 6px; width: 28px; height: 28px; background: rgba(0, 0, 0, 0.7); border-radius: 50%; display: flex; justify-content: center; align-items: center; z-index: 15; color: #ccc; font-size: 0.9rem; }
+        .favorite-btn-action.is-fav { color: #ff3366; }
+        .meta-description-area { padding: 8px; display: flex; flex-direction: column; gap: 4px; } 
+        .meta-title { font-size: 0.78rem; color: var(--white); font-weight: 500; line-height: 1.3; height: 2.6em; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; } 
+        .meta-stats { display: flex; justify-content: space-between; align-items: center; font-size: 0.65rem; color: #888; } 
+        .stat-views { color: var(--holo-solid); font-weight: bold; } 
+
+        .novel-header-bar {
+            background-color: #ffffff;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e1e4e6;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+        }
+        .novel-app-title { font-family: var(--font-logo); font-size: 1.6rem; color: #000000; font-weight: bold; }
+        .novel-close-btn { background: #000000; color: #ffffff; border: none; padding: 6px 12px; font-weight: bold; border-radius: 4px; font-size: 0.85rem; cursor: pointer; }
+        
+        .books-directory-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 12px;
+            width: 100%;
+        }
+        .book-profile-card {
+            background: #ffffff;
+            border: 3px solid #000000; 
+            border-radius: 6px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.06);
+            transition: transform 0.1s ease;
+        }
+        .book-profile-card:active { transform: scale(0.97); }
+        .book-cover-wrap {
+            width: 100%;
+            aspect-ratio: 3/4;
+            background-color: #eaeaea;
+            position: relative;
+            border-bottom: 2px solid #000000;
+        }
+        .book-cover-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .book-info-area { padding: 8px; background: #ffffff; display: flex; flex-direction: column; gap: 4px; }
+        .book-title-text { font-size: 0.88rem; font-weight: bold; color: #000000; line-height: 1.3; }
+        
+        .book-fav-trigger {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 28px;
+            height: 28px;
+            background: rgba(255,255,255,0.9);
+            border: 1px solid #000;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            color: #888;
+            font-size: 0.85rem;
+        }
+        .book-fav-trigger.is-book-fav { color: #ff3366; }
+
+        .reader-portal-container { padding: 16px; display: flex; flex-direction: column; gap: 16px; width: 100%; background: #ffffff; min-height: 100vh; }
+        .reader-back-btn { background: #000; color: #fff; padding: 10px 14px; font-weight: bold; font-size: 0.85rem; border: none; border-radius: 4px; align-self: flex-start; cursor: pointer; }
+        .reader-main-title { font-size: 1.4rem; font-weight: bold; color: #000; line-height: 1.4; border-bottom: 2px solid #000; padding-bottom: 8px; }
+        .reader-body-content { font-size: 1.1rem; color: #2b2b2b; line-height: 1.8; text-align: justify; white-space: pre-line; word-break: break-word; }
+
+        .player-inner-section { padding: 12px 8px; display: flex; flex-direction: column; gap: 12px; width: 100%; } 
+        .back-navigation-btn { background-color: var(--dark-gray); border: 1px solid #333; color: var(--white); border-radius: 4px; padding: 10px 14px; font-size: 0.85rem; font-weight: bold; cursor: pointer; align-self: flex-start; } 
+        .player-viewport-wrapper { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; border: 1px solid #222; border-radius: 6px; overflow: hidden; } 
+        .iframe-video-wrapper { width: 100%; height: 100%; } 
+        .iframe-video-wrapper iframe { width: 100%; height: 100%; border: none; display: block; } 
+        .player-anti-click-shield { position: absolute; top: 0; left: 0; width: 100%; height: 45px; background: transparent; z-index: 10; } 
+        .active-video-details-title { font-size: 0.95rem; font-weight: bold; line-height: 1.4; color: var(--white); position: relative; padding-left: 10px; } 
+        .active-video-details-title::before { content: ''; position: absolute; left: 0; top: 0; width: 3px; height: 100%; background: var(--holo-gradient); }
+        .clean-vip-banner { background-color: var(--dark-gray); position: relative; border-radius: 8px; padding: 16px; text-align: center; display: flex; flex-direction: column; gap: 12px; overflow: hidden; } 
+        .clean-vip-banner::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; border-radius: 8px; padding: 2px; background: var(--holo-gradient); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
+        .vip-banner-desc { color: var(--white); font-size: 0.88rem; line-height: 1.6; font-weight: 500; } 
+        .vip-direct-action-btn { background: var(--holo-gradient); color: var(--white); border: none; border-radius: 4px; padding: 12px 18px; font-size: 1.05rem; font-weight: bold; text-decoration: none; display: block; text-shadow: 0 1px 2px rgba(0,0,0,0.5); } 
+        .section-header-title { font-family: var(--font-logo); font-size: 1.1rem; color: var(--holo-solid); border-bottom: 1px solid #333; padding-bottom: 6px; margin-top: 8px; text-transform: uppercase; } 
+        .system-msg { grid-column: span 2; text-align: center; font-weight: 500; font-size: 0.85rem; padding: 24px 10px; color: #666; }
+    </style>
+</head>
+<body> 
+
+<div class="popup-overlay" id="noticePopup">
+    <div class="popup-box">
+        <div class="popup-title">18+ WARNING</div>
+        <div class="popup-text">ဤဝဘ်ဆိုက်သည် အသက် ၁၈ နှစ်ပြည့်ပြီးသူများသာ ကြည့်ရှုရန် ဖြစ်ပါသည်။ စည်းကမ်းချက်များကို သဘောတူပါက အောက်ပါခလုတ်ကို နှိပ်၍ ဆက်လက်ဝင်ရောက်နိုင်ပါသည်။</div>
+        <button class="popup-btn" onclick="closeNoticePopup()">ENTER SITE</button>
+    </div>
+</div> 
+
+<div class="popup-overlay" id="adPopup" style="display: none;">
+    <div class="ad-popup-box">
+        <div class="ad-frame-wrapper"><iframe id="adSmartlinkFrame" src=""></iframe></div>
+        <div class="ad-timer-bar" id="adTimerText">Loading...</div>
+    </div>
+</div>
+
+<div class="phone-screen"> 
+
+    <div id="dashboardPage" class="page active">
+        <div class="site-header">
+            <div class="site-logo-area">
+                <div class="logo-title-group">
+                    <span class="logo-text-white">BurmaR</span>
+                    <span class="logo-text-green">Hubb.COM</span>
+                </div>
+                <div class="menu-nav-trigger" onclick="toggleHeaderMenu(event)">☰</div>
+                
+                <div class="header-dropdown-menu" id="headerDropdownMenu">
+                    <div class="menu-item-link" onclick="switchRouteView('novel')">📚 အပြာစာအုပ်စာပေဖတ်ရန်</div>
+                    <div class="menu-item-link" onclick="switchRouteView('video')">🎥 ဗီဒီယိုများကြည့်ရှုရန်</div>
+                </div>
+            </div> 
+
+            <div class="search-wrapper">
+                <input type="text" id="searchField" class="search-input-field" placeholder="Search videos...">
+                <div class="search-submit-icon" onclick="executeSearch()">🔍</div>
+            </div> 
+
+            <div class="tags-nav-bar">
+                <button class="tag-pill active" onclick="changeCategory('all', this)">All Videos</button>
+                <button class="tag-pill" onclick="changeCategory('asian', this)">Asian</button>
+                <button class="tag-pill" onclick="changeCategory('myanmar', this)">Myanmar</button>
+                <button class="tag-pill" onclick="handleFavCategoryClick(this)" style="color: #ff3366;">❤️ အကြိုက်ဆုံးများ</button>
+            </div>
+        </div> 
+
+        <div class="video-container-grid">
+            <div class="clean-video-grid" id="mainVideoGrid"></div>
+        </div>
+    </div>
+
+    <div id="novelAppPage" class="page">
+        <div class="novel-header-bar">
+            <span class="novel-app-title">BurmaR Novels</span>
+            <button class="novel-close-btn" onclick="switchRouteView('video')">◀ Back</button>
+        </div>
+        
+        <div class="books-directory-grid" id="booksDirectoryGrid"></div>
+    </div>
+
+    <div id="novelReaderPage" class="page">
+        <div class="reader-portal-container">
+            <button class="reader-back-btn" onclick="exitReaderToDirectory()">◀ ပြန်ထွက်ရန်</button>
+            <div class="reader-main-title" id="readerTitleDisplay">စာအုပ်ခေါင်းစဉ်</div>
+            <div class="reader-body-content" id="readerBodyDisplay">စာသားများ...</div>
+        </div>
+    </div>
+
+    <div id="playerPage" class="page">
+        <div class="player-inner-section">
+            <button class="back-navigation-btn" onclick="returnToDashboard()">◀ Back to Home</button> 
+            <div class="player-viewport-wrapper">
+                <div class="player-anti-click-shield"></div>
+                <div class="iframe-video-wrapper" id="iframeWrapper"></div>
+            </div> 
+            <div class="active-video-details-title" id="activeVideoTitle">Loading title...</div> 
+            <div class="clean-vip-banner">
+                <div class="vip-banner-desc">ကြော်ငြာ ထည့်သွင်းကာ လုပ်ငန်းတိုးချဲ့ချင်သော မိတ်ဆွေများ ကြော်ငြာလာရောက်အပ်နှံနိုင်ပါသည်! စလော့ / 2D3D / အစုံ လက်ခံသည်!</div>
+                <a href="https://t.me/MmpHubAds" target="_blank" class="vip-direct-action-btn">ကြော်ငြာအပ်ရန်</a>
+            </div> 
+            <div class="section-header-title">Related Videos</div>
+            <div class="clean-video-grid" id="relatedVideoGrid"></div>
+        </div>
+    </div> 
+
+</div> 
+
 <script>
-    // ⚠️ သင့် GitHub ရဲ့ books.json RAW Link ကို ထည့်သွင်းထားပြီးဖြစ်သည်
     const github_raw_url = "https://raw.githubusercontent.com/myanmarpagoda112-ux/arr-t-2/refs/heads/main/books.json"; 
 
     let searchKeyword = "asian"; 
@@ -27,7 +390,6 @@
         menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
     }
 
-    // 🎬 ROUTE ANIMATED TRANSACTION FADE IN/OUT + WHITE/BLACK UI THEME SWITCH
     function switchRouteView(target) {
         const bodyEl = document.body;
         const currentActivePage = document.querySelector('.page.active');
@@ -45,7 +407,7 @@
                 const targetPage = document.getElementById('novelAppPage');
                 targetPage.classList.add('active');
                 setTimeout(() => targetPage.style.opacity = '1', 50);
-                renderBooksDirectory(); // Fetch JSON again on load
+                renderBooksDirectory(); 
             } else {
                 bodyEl.classList.remove('novel-mode-active');
                 const targetPage = document.getElementById('dashboardPage');
@@ -55,13 +417,11 @@
         }, 400);
     }
 
-    // GITHUB JSON မှ စာအုပ်များ ဆွဲယူပြသပေးမည့် Function (ပြင်ဆင်ပြီးသား)
     async function renderBooksDirectory() {
         const grid = document.getElementById('booksDirectoryGrid');
         grid.innerHTML = `<div class="system-msg">စာအုပ်များ ဆွဲနေသည်...</div>`;
         
         try {
-            // GitHub Repository Cached ဖြစ်မနေစေရန် Timestamp parameters ထည့်သွင်းထားပါသည်
             const res = await fetch(`${github_raw_url}?t=${new Date().getTime()}`);
             const booksData = await res.json();
             
@@ -78,7 +438,7 @@
                 const card = document.createElement('div');
                 card.className = 'book-profile-card';
                 
-                // 💡 Line Breaks ကြောင့် JS Error မတက်စေရန် data-attributes တွင် encode လုပ်၍ လုံခြုံစွာ သိမ်းဆည်းခြင်း
+                // 💡 Newlines ကြောင့် JS Error မတက်စေရန် Safe Attributes အဖြစ် ပြောင်းလဲသိမ်းဆည်းခြင်း
                 card.setAttribute('data-title', book.title);
                 card.setAttribute('data-content', encodeURIComponent(book.content || ""));
                 
@@ -103,7 +463,7 @@
             });
         } catch (err) {
             console.error(err);
-            grid.innerHTML = `<div class="system-msg">စာအုပ်များ ဆွဲယူ၍ မရနိုင်ပါ။ (JSON file လွတ်နေခြင်း သို့မဟုတ် Token မမှန်ခြင်း ဖြစ်နိုင်သည်)</div>`;
+            grid.innerHTML = `<div class="system-msg">စာအုပ်များ ဆွဲယူ၍ မရနိုင်ပါ။ (JSON file လွတ်နေခြင်း ဖြစ်နိုင်သည်)</div>`;
         }
     }
 
@@ -246,37 +606,4 @@
                         card.innerHTML = `
                             <div class="thumb-wrapper">
                                 <img src="${video.default_thumb.src}" alt="Thumb"><div class="video-duration-badge">${durationStr}</div>
-                                <div class="favorite-btn-action ${isAlreadyFav ? 'is-fav' : ''}" onclick="toggleFavorite(event, ${JSON.stringify(minimalVideoData).replace(/"/g, '&quot;')})">${isAlreadyFav ? '❤️' : '♡'}</div>
-                            </div>
-                            <div class="meta-description-area">
-                                <div class="meta-title">${video.title}</div>
-                                <div class="meta-stats"><span class="stat-views">${formattedViews} views</span><span>${video.added || 'Recent'}</span></div>
-                            </div>`;
-                        targetGrid.appendChild(card);
-                    }
-                }); 
-                sessionStorage.setItem('seenVideoIds', JSON.stringify(seenVideoIds)); isFetchingMore = false;
-            } else { isFetchingMore = false; }
-        } catch (err) { console.error(err); isFetchingMore = false; }
-    } 
-
-    function toggleFavorite(e, videoData) {
-        e.stopPropagation(); let favorites = JSON.parse(localStorage.getItem('userFavoriteVideos')); const index = favorites.findIndex(item => item.id === videoData.id);
-        if (index > -1) { favorites.splice(index, 1); e.currentTarget.classList.remove('is-fav'); e.currentTarget.innerHTML = '♡'; } 
-        else { favorites.push(videoData); e.currentTarget.classList.add('is-fav'); e.currentTarget.innerHTML = '❤️'; }
-        localStorage.setItem('userFavoriteVideos', JSON.stringify(favorites));
-    }
-
-    function openVideoPlayer(embedUrl, title) {
-        currentActiveView = "player"; document.getElementById('dashboardPage').classList.remove('active'); document.getElementById('playerPage').classList.add('active'); 
-        document.getElementById('iframeWrapper').innerHTML = `<iframe src="${embedUrl}" allowfullscreen scrolling="no"></iframe>`;
-        document.getElementById('activeVideoTitle').innerText = title; playerRelatedPageNum = Math.floor(Math.random() * 5) + 6;
-        loadPortalVideos(searchKeyword, playerRelatedPageNum, 'relatedVideoGrid', false); window.scrollTo(0, 0);
-    } 
-
-    function returnToDashboard() {
-        currentActiveView = "dashboard"; document.getElementById('playerPage').classList.remove('active'); document.getElementById('dashboardPage').classList.add('active');
-        document.getElementById('iframeWrapper').innerHTML = ""; document.getElementById('relatedVideoGrid').innerHTML = ""; 
-        if (searchKeyword === "___favorites___") { displayFavoriteVideos(); } else { loadPortalVideos(searchKeyword, dashboardPageNum, 'mainVideoGrid', false); }
-    }
-</script>
+                                <div class="favorite-btn-action ${isAlreadyFav ? 'is-fav' : ''}" onclick="toggleFavorite(event, ${JSON.stringify(minimalVideoData).replace(/"/g, '&quot;')})">${isAlreadyFav
