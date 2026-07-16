@@ -5,47 +5,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BurmaRHubb Admin Panel</title>
     <style>
-        body {
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
             font-family: Arial, sans-serif;
+        }
+        body {
             background-color: #f4f6f9;
-            padding: 30px;
+            padding: 20px;
             color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
         .admin-box {
-            max-width: 600px;
-            background: #fff;
+            width: 100%;
+            max-width: 500px;
+            background: #ffffff;
             padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            margin: 0 auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         }
-        h2 { text-align: center; margin-bottom: 25px; color: #2D38AB; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; font-weight: bold; margin-bottom: 8px; }
+        h2 { 
+            text-align: center; 
+            margin-bottom: 25px; 
+            color: #2D38AB; 
+            font-size: 24px;
+        }
+        .form-group { 
+            margin-bottom: 20px; 
+        }
+        label { 
+            display: block; 
+            font-weight: bold; 
+            margin-bottom: 8px; 
+            font-size: 14px;
+            color: #444;
+        }
         input[type="text"], textarea {
             width: 100%;
             padding: 12px;
             border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
+            border-radius: 6px;
             font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
         }
-        textarea { height: 150px; resize: vertical; }
+        input[type="text"]:focus, textarea:focus {
+            border-color: #2D38AB;
+        }
+        textarea { 
+            height: 150px; 
+            resize: vertical; 
+        }
         .btn-save {
             width: 100%;
             background: #2D38AB;
-            color: #fff;
+            color: #ffffff;
             padding: 14px;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             font-size: 16px;
             cursor: pointer;
             font-weight: bold;
             transition: background 0.3s;
         }
-        .btn-save:hover { background: #4242A6; }
-        
-        /* Dynamic Loading State Styling */
+        .btn-save:hover { 
+            background: #4242A6; 
+        }
         .loading {
             opacity: 0.6;
             pointer-events: none;
@@ -57,7 +86,7 @@
 <div class="admin-box" id="adminBox">
     <h2>စာအုပ်အသစ်ထည့်ရန် စနစ်</h2>
 
-    <!-- Book Add Form (No configurations shown to the client) -->
+    <!-- Book Add Form -->
     <div class="form-group">
         <label>စာအုပ် မျက်နှာဖုံး Image Direct URL (PNG/JPG)</label>
         <input type="text" id="bookImage" placeholder="https://i.ibb.co/xxxxx/image.png">
@@ -77,7 +106,7 @@
 </div>
 
 <script>
-    // GitHub Credentials Hardcoded (Bypasses setup for client)
+    // GitHub Credentials (ကျောရိုးကနေ တိုက်ရိုက်ချိတ်ထားပြီးသားမလို့ User က ပြင်စရာမလိုပါ)
     const GH_USER = "myanmarpagoda112-ux";
     const GH_REPO = "arr-t-2";
     const GH_TOKEN = "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";
@@ -104,7 +133,7 @@
         let currentData = [];
         let sha = "";
 
-        // Step 1: Get Existing books.json to update it
+        // Step 1: Existing books.json ကို လှမ်းဆွဲယူပြီး ဖတ်မယ်
         try {
             let response = await fetch(url, {
                 headers: { 'Authorization': `token ${GH_TOKEN}` }
@@ -113,7 +142,6 @@
             if(response.ok) {
                 let jsonRes = await response.json();
                 sha = jsonRes.sha;
-                // Decode base64 contents from github
                 let decodedContent = decodeURIComponent(escape(atob(jsonRes.content)));
                 currentData = JSON.parse(decodedContent);
             }
@@ -121,7 +149,7 @@
             console.log("Starting a new books.json array configuration.");
         }
 
-        // Step 2: Push new object into current array
+        // Step 2: စာအုပ်အသစ်ကို Data အဟောင်းတွေထဲ ထည့်ပေါင်းမယ်
         const newBook = {
             image: imgUrl,
             title: title,
@@ -130,14 +158,14 @@
         };
         currentData.push(newBook);
 
-        // Step 3: Send back updated content to Github
+        // Step 3: GitHub ဆီကို Base64 နဲ့ ပြန်ပို့ပြီး သိမ်းမယ်
         const updatedContentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(currentData, null, 2))));
         
         let bodyData = {
             message: `Added new book: ${title}`,
             content: updatedContentBase64
         };
-        if(sha !== "") bodyData.sha = sha; // required for modifying existing files
+        if(sha !== "") bodyData.sha = sha;
 
         try {
             let uploadRes = await fetch(url, {
@@ -165,154 +193,6 @@
             // Reset Loading State
             saveBtn.innerText = "SAVE (သိမ်းဆည်းမည်)";
             adminBox.classList.remove('loading');
-        }
-    }
-</script>
-</body>
-</html>
-            padding: 12px;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .btn-save:hover { background: #4242A6; }
-        .config-box {
-            background: #eee;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            font-size: 13px;
-        }
-    </style>
-</head>
-<body>
-
-<div class="admin-box">
-    <h2>စာအုပ်အသစ်ထည့်ရန် စနစ်</h2>
-    
-    <!-- GitHub Credentials configuration inside admin panel -->
-    <div class="config-box">
-        <strong>⚙️ GitHub Configuration (ပထမဆုံးအကြိမ် ဖြည့်ရန်)</strong>
-        <div class="form-group" style="margin-top:10px;">
-            <input type="text" id="ghUser" placeholder="GitHub Username (ဥပမာ - githubname)">
-        </div>
-        <div class="form-group">
-            <input type="text" id="ghRepo" placeholder="Repository Name (ဥပမာ - burmarhub-web)">
-        </div>
-        <div class="form-group">
-            <input type="text" id="ghToken" placeholder="GitHub Personal Access Token (Classic)">
-        </div>
-    </div>
-
-    <!-- Book Add Form -->
-    <div class="form-group">
-        <label>စာအုပ် မျက်နှာဖုံး Image Direct URL (PNG/JPG)</label>
-        <input type="text" id="bookImage" placeholder="https://i.ibb.co/xxxxx/image.png">
-    </div>
-
-    <div class="form-group">
-        <label>စာအုပ်နာမည်</label>
-        <input type="text" id="bookTitle" placeholder="စာအုပ်အမည် ရေးရန်">
-    </div>
-
-    <div class="form-group">
-        <label>စာအုပ်အကြောင်းအရာ/အညွှန်း</label>
-        <textarea id="bookDesc" placeholder="စာအုပ်အတွင်းပိုင်း ပါဝင်အကြောင်းအရာများ အစအဆုံး ရေးသားရန်..."></textarea>
-    </div>
-
-    <button class="btn-save" onclick="saveBook()">SAVE (သိမ်းဆည်းမည်)</button>
-</div>
-
-<script>
-    // Load config from LocalStorage if already saved
-    if(localStorage.getItem('gh_user')) document.getElementById('ghUser').value = localStorage.getItem('gh_user');
-    if(localStorage.getItem('gh_repo')) document.getElementById('ghRepo').value = localStorage.getItem('gh_repo');
-    if(localStorage.getItem('gh_token')) document.getElementById('ghToken').value = localStorage.getItem('gh_token');
-
-    async function saveBook() {
-        const user = document.getElementById('ghUser').value.trim();
-        const repo = document.getElementById('ghRepo').value.trim();
-        const token = document.getElementById('ghToken').value.trim();
-
-        const imgUrl = document.getElementById('bookImage').value.trim();
-        const title = document.getElementById('bookTitle').value.trim();
-        const desc = document.getElementById('bookDesc').value.trim();
-
-        if(!user || !repo || !token || !imgUrl || !title || !desc) {
-            alert("အချက်အလက်အားလုံး ပြည့်စုံအောင် ဖြည့်စွက်ပေးပါ!");
-            return;
-        }
-
-        // Save config to local storage for convenience next time
-        localStorage.setItem('gh_user', user);
-        localStorage.setItem('gh_repo', repo);
-        localStorage.setItem('gh_token', token);
-
-        const filepath = 'books.json';
-        const url = `https://api.github.com/repos/${user}/${repo}/contents/${filepath}`;
-
-        let currentData = [];
-        let sha = "";
-
-        // Step 1: Get Existing books.json to update it
-        try {
-            let response = await fetch(url, {
-                headers: { 'Authorization': `token ${token}` }
-            });
-            
-            if(response.ok) {
-                let jsonRes = await response.json();
-                sha = jsonRes.sha;
-                // Decode base64 contents from github
-                let decodedContent = decodeURIComponent(escape(atob(jsonRes.content)));
-                currentData = JSON.parse(decodedContent);
-            }
-        } catch(e) {
-            console.log("Creating new books.json file initialization.");
-        }
-
-        // Step 2: Push new object into current array
-        const newBook = {
-            image: imgUrl,
-            title: title,
-            description: desc,
-            date: new Date().toISOString()
-        };
-        currentData.push(newBook);
-
-        // Step 3: Send back updated content to Github
-        const updatedContentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(currentData, null, 2))));
-        
-        let bodyData = {
-            message: `Added new book: ${title}`,
-            content: updatedContentBase64
-        };
-        if(sha !== "") bodyData.sha = sha; // required for modifying existing files
-
-        try {
-            let uploadRes = await fetch(url, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `token ${token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(bodyData)
-            });
-
-            if(uploadRes.ok) {
-                alert("စာအုပ်အား Database (GitHub) ထဲသို့ အောင်မြင်စွာ တင်ပြီးပါပြီ။ ၁ မိနစ်ခန့်အကြာတွင် မူရင်း Web ပေါ်တွင် မြင်တွေ့ရပါမည်။");
-                // Clear input boxes
-                document.getElementById('bookImage').value = '';
-                document.getElementById('bookTitle').value = '';
-                document.getElementById('bookDesc').value = '';
-            } else {
-                let errData = await uploadRes.json();
-                alert("အမှားအယွင်းရှိသွားပါသည်: " + errData.message);
-            }
-        } catch(err) {
-            alert("Connection error occurred!");
         }
     }
 </script>
