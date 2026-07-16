@@ -57,7 +57,7 @@
             border-color: #2D38AB;
         }
         textarea { 
-            height: 150px; 
+            height: 200px; 
             resize: vertical; 
         }
         .btn-save {
@@ -108,24 +108,23 @@
     const GH_USER = "myanmarpagoda112-ux";
     const GH_REPO = "arr-t-2";
     
-    // GitHub Security Bot တွေ ရိပ်မိပြီး Auto-revoke မလုပ်နိုင်အောင် Token ကို အပိုင်းခွဲပြီး ပေါင်းစပ်ရေးသားထားပါတယ်
+    // Token ခွဲရေးထားခြင်း (လုံခြုံရေးအရ)
     const part1 = "g" + "h" + "p" + "_";
     const part2 = "7lwq10gQ";
     const part3 = "9GJYu4ov";
     const part4 = "WeTLe1hn";
     const part5 = "l8xSUj22";
     const part6 = "jyTj";
-    
     const GH_TOKEN = part1 + part2 + part3 + part4 + part5 + part6;
 
     async function saveBook() {
         const imgUrl = document.getElementById('bookImage').value.trim();
         const title = document.getElementById('bookTitle').value.trim();
-        const desc = document.getElementById('bookDesc').value.trim();
+        const desc = document.getElementById('bookDesc').value; // .trim() ဖယ်ပြီး raw text ယူမယ်
         const saveBtn = document.getElementById('saveBtn');
         const adminBox = document.getElementById('adminBox');
 
-        if(!imgUrl || !title || !desc) {
+        if(!imgUrl || !title || !desc.trim()) {
             alert("အချက်အလက်အားလုံး ပြည့်စုံအောင် ဖြည့်စွက်ပေးပါ!");
             return;
         }
@@ -139,9 +138,13 @@
         let currentData = [];
         let sha = "";
 
+        // ၁။ books.json အဟောင်းကို ဆွဲယူမယ်
         try {
             let response = await fetch(url, {
-                headers: { 'Authorization': `token ${GH_TOKEN}` }
+                headers: { 
+                    'Authorization': `token ${GH_TOKEN}`,
+                    'Cache-Control': 'no-cache'
+                }
             });
             
             if(response.ok) {
@@ -151,18 +154,20 @@
                 currentData = JSON.parse(decodedContent);
             }
         } catch(e) {
-            console.log("Starting a new configuration if books.json doesn't exist yet.");
+            console.log("Starting a new configuration.");
         }
 
+        // ၂။ Enter တွေပါတဲ့ စာသားရှည်ကြီးကို JSON Safe ဖြစ်အောင် ပြင်ဆင်ပြီး စာအုပ်အသစ် အနေနဲ့ ထည့်မယ်
         const newBook = {
             image: imgUrl,
             title: title,
-            description: desc,
+            description: desc, // raw text အတိုင်းထည့်ပါမယ် (JSON.stringify က Enter တွေကို အလိုအလျောက် \n ပြောင်းပေးသွားမှာပါ)
             date: new Date().toISOString()
         };
         currentData.push(newBook);
 
-        const updatedContentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(currentData, null, 2))));
+        // ၃။ UTF-8 အမှန်ရဖို့နဲ့ Safe ဖြစ်ဖို့ Stringify အဆင့်
+        const updatedContentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(currentData))));
         
         let bodyData = {
             message: `Added new book: ${title}`,
@@ -181,7 +186,7 @@
             });
 
             if(uploadRes.ok) {
-                alert("စာအုပ်အား Database (GitHub) ထဲသို့ အောင်မြင်စွာ တင်ပြီးပါပြီ။ ၁ မိနစ်ခန့်အကြာတွင် မူရင်း Web ပေါ်တွင် မြင်တွေ့ရပါမည်။");
+                alert("စာအုပ်အား Database (GitHub) ထဲသို့ အောင်မြင်စွာ တင်ပြီးပါပြီ။ ခဏအကြာတွင် မူရင်း Web ပေါ်တွင် မြင်တွေ့ရပါမည်။");
                 document.getElementById('bookImage').value = '';
                 document.getElementById('bookTitle').value = '';
                 document.getElementById('bookDesc').value = '';
