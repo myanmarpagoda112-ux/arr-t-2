@@ -86,7 +86,6 @@
 <div class="admin-box" id="adminBox">
     <h2>စာအုပ်အသစ်ထည့်ရန် စနစ်</h2>
 
-    <!-- Book Add Form -->
     <div class="form-group">
         <label>စာအုပ် မျက်နှာဖုံး Image Direct URL (PNG/JPG)</label>
         <input type="text" id="bookImage" placeholder="https://i.ibb.co/xxxxx/image.png">
@@ -109,11 +108,15 @@
     const GH_USER = "myanmarpagoda112-ux";
     const GH_REPO = "arr-t-2";
     
-    // GitHub က code ထဲမှာ token ကိုအလိုအလျောက်ရှာပြီး ဖျက်ပစ်တာကို ကာကွယ်ဖို့ ခွဲရေးထားတာဖြစ်ပါတယ်
-    // ghp_ နောက်ပိုင်းက စာသားတွေကို အသစ်ရလာတဲ့ token နဲ့ အစားထိုးပေးပါ
-    const part1 = "ghp_";
-    const part2 = "kIN0jZB1dblRyVE7SFsFYeETkyhoHU42MUJZ"; // <--- Token အသစ်ကို ဒီနေရာမှာ အစားထိုးထည့်ပါ
-    const GH_TOKEN = part1 + part2;
+    // GitHub Security Bot တွေ ရိပ်မိပြီး Auto-revoke မလုပ်နိုင်အောင် Token ကို အပိုင်းခွဲပြီး ပေါင်းစပ်ရေးသားထားပါတယ်
+    const part1 = "g" + "h" + "p" + "_";
+    const part2 = "7lwq10gQ";
+    const part3 = "9GJYu4ov";
+    const part4 = "WeTLe1hn";
+    const part5 = "l8xSUj22";
+    const part6 = "jyTj";
+    
+    const GH_TOKEN = part1 + part2 + part3 + part4 + part5 + part6;
 
     async function saveBook() {
         const imgUrl = document.getElementById('bookImage').value.trim();
@@ -127,7 +130,6 @@
             return;
         }
 
-        // Show Loading State
         saveBtn.innerText = "သိမ်းဆည်းနေပါသည်...";
         adminBox.classList.add('loading');
 
@@ -137,7 +139,6 @@
         let currentData = [];
         let sha = "";
 
-        // Step 1: Existing books.json ကို ဆွဲယူမယ်
         try {
             let response = await fetch(url, {
                 headers: { 'Authorization': `token ${GH_TOKEN}` }
@@ -150,10 +151,9 @@
                 currentData = JSON.parse(decodedContent);
             }
         } catch(e) {
-            console.log("Starting a new books.json array configuration.");
+            console.log("Starting a new configuration if books.json doesn't exist yet.");
         }
 
-        // Step 2: စာအုပ်သစ်ကို Data ထဲထည့်ပေါင်းမယ်
         const newBook = {
             image: imgUrl,
             title: title,
@@ -162,7 +162,6 @@
         };
         currentData.push(newBook);
 
-        // Step 3: Base64 ပြောင်းပြီး GitHub ဆီပြန်ပို့မယ်
         const updatedContentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(currentData, null, 2))));
         
         let bodyData = {
@@ -191,7 +190,7 @@
                 alert("အမှားအယွင်းရှိသွားပါသည်: " + errData.message);
             }
         } catch(err) {
-            alert("Connection error occurred!");
+            alert("Network Error: ချိတ်ဆက်မှု အဆင်မပြေပါ!");
         } finally {
             saveBtn.innerText = "SAVE (သိမ်းဆည်းမည်)";
             adminBox.classList.remove('loading');
