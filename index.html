@@ -203,7 +203,7 @@
             color: var(--c3);
         }
 
-        /* စာအုပ်စင် Style ပြင်ဆင်မှုများ */
+        /* စာအုပ်စင် Style */
         .book-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -238,8 +238,8 @@
             font-size: 14px;
             color: #111;
             line-height: 1.6;
-            white-space: pre-wrap; /* Enter ခေါက်တာတွေကို ပုံစံမပျက် ပြသပေးမယ် */
-            max-height: 250px; /* စာအုပ်ရှည်ကြီးတွေကို Box ထဲမှာ အောက်ဆင်းဖတ်လို့ရအောင် */
+            white-space: pre-wrap;
+            max-height: 250px;
             overflow-y: auto;
             border: 1px solid #ddd;
             padding: 10px;
@@ -286,6 +286,9 @@
     </main>
 
     <script>
+        // မင်းရဲ့ Google Sheet ID ကို စနစ်တကျ ထည့်သွင်းပေးထားပြီးဖြစ်ပါတယ်
+        const SHEET_ID = "1wT2ttqz3G_RiSmYEZ-EsV-glap1c7VOidzpUb3easpg"; 
+
         function toggleMenu() {
             var menu = document.getElementById('menuOverlay');
             menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
@@ -304,7 +307,7 @@
                     document.getElementById('videoSection').style.display = 'none';
                     document.getElementById('bookSection').style.display = 'block';
                     document.getElementById('adBox').style.display = 'none';
-                    loadBooks();
+                    loadBooksFromFormSheet();
                 } else {
                     document.body.className = 'dark-mode';
                     document.getElementById('videoSection').style.display = 'block';
@@ -340,35 +343,51 @@
             });
         }
 
-        // စာအုပ်များကို caching ကင်းပြီး အမှားအယွင်းမရှိ ဖတ်ရှုရန်စနစ်
-        function loadBooks() {
+        // Google Sheet (Form Response) ကနေ အခမဲ့၊ လုံခြုံစွာနဲ့ ဒေတာဆွဲယူပြသပေးသည့်စနစ်
+        function loadBooksFromFormSheet() {
             var bookGrid = document.getElementById('bookGrid');
-            
-            fetch('books.json?_=' + new Date().getTime())
-            .then(response => {
-                if (!response.ok) throw new Error("HTTP error " + response.status);
-                return response.json(); // အပေါ်က admin.html ကြောင့် JSON က လုံးဝသန့်စင်ပြီးသားဖြစ်လို့ တိုက်ရိုက်ဖတ်နိုင်ပါပြီ
-            })
-            .then(data => {
+            bookGrid.innerHTML = '<p>စာအုပ်များအား ဆွဲယူနေပါသည်...</p>';
+
+            const sheetUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
+
+            fetch(sheetUrl)
+            .then(response => response.text())
+            .then(csvText => {
                 bookGrid.innerHTML = '';
-                if(data.length === 0) {
-                    bookGrid.innerHTML = '<p>ဖတ်ရှုစရာ စာအုပ်မရှိသေးပါ။ Admin ကနေ စာအုပ်အရင်ထည့်ပေးပါ။</p>';
+                
+                // CSV စာသားကို အတန်းလိုက် ခွဲထုတ်ခြင်း
+                const rows = csvText.split('\n').map(row => {
+                    return row.split('","').map(val => val.replace(/^"|"$/g, '').trim());
+                });
+
+                if (rows.length <= 1) {
+                    bookGrid.innerHTML = '<p>ဖတ်ရှုစရာ စာအုပ်မရှိသေးပါ။</p>';
                     return;
                 }
-                
-                data.reverse().forEach(book => {
-                    bookGrid.innerHTML += `
-                        <div class="book-card">
-                            <img src="${book.image}" class="book-img" alt="book cover" onerror="this.src='https://via.placeholder.com/240x300?text=No+Cover'">
-                            <div class="book-title">${book.title}</div>
-                            <div class="book-desc">${book.description}</div>
-                        </div>
-                    `;
+
+                // စာအုပ်အသစ်တင်သမျှ အပေါ်ဆုံးမှာ အမြဲပေါ်စေရန် ပြောင်းပြန်လှန်သည်
+                const books = rows.slice(1).reverse();
+
+                books.forEach(book => {
+                    // Google Form ရဲ့ သဘောသဘာဝအရ Column 0=Timestamp, Column 1=image, Column 2=title, Column 3=description ဖြစ်ပါတယ်
+                    if (book.length >= 4 && book[2] !== "") {
+                        const image = book[1] || 'https://via.placeholder.com/240x300?text=No+Cover';
+                        const title = book[2];
+                        const description = book[3] ? book[3].replace(/\\n/g, '\n') : '';
+
+                        bookGrid.innerHTML += `
+                            <div class="book-card">
+                                <img src="${image}" class="book-img" alt="book cover" onerror="this.src='https://via.placeholder.com/240x300?text=No+Cover'">
+                                <div class="book-title">${title}</div>
+                                <div class="book-desc">${description}</div>
+                            </div>
+                        `;
+                    }
                 });
             })
             .catch(err => {
-                console.error("Fetch/Parse Error:", err);
-                bookGrid.innerHTML = '<p>စာအုပ်များ ဖတ်ရှုရန် စာအုပ်မရှိသေးပါ သို့မဟုတ် ဒေတာအဆွဲအယူ မှားယွင်းနေပါသည်။</p>';
+                console.error(err);
+                bookGrid.innerHTML = '<p>စာအုပ်များ ဆွဲယူရာတွင် အမှားအယွင်းရှိနေပါသည်။ (Google Sheet ရဲ့ Share status ကို Anyone with the link ပြောင်းထားဖို့ မမေ့ပါနဲ့ဗျာ)</p>';
             });
         }
 
