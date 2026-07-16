@@ -96,17 +96,16 @@
 <div class="admin-box" id="adminBox">
     <h2>စာအုပ်အသစ်ထည့်ရန် စနစ်</h2>
 
-    <!-- Token မရှိသေးရင် သတိပေးမည့်ဘောက်စ် -->
     <div class="token-alert" id="tokenAlert">
-        GitHub Token မထည့်ရသေးပါ။ အောက်တွင် အရင်ထည့်ပေးပါ။
+        ⚠️ GitHub Token မထည့်ရသေးပါ။ အောက်က ကွက်လပ်မှာ အရင်ထည့်ပေးပါ။
     </div>
 
-    <!-- Token ထည့်ရန် နေရာ (တစ်ကြိမ်ပဲ ထည့်ရန်လိုပြီး Browser ထဲမှာ အော်တိုမှတ်ထားပါလိမ့်မည်) -->
-    <div class="form-group" style="background: #f0f2f5; padding: 15px; border-radius: 8px;">
-        <label style="color: #2D38AB;">🔑 GitHub Personal Access Token</label>
-        <input type="password" id="githubToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxx" onchange="saveTokenLocally(this.value)">
-        <small style="color: #666; display: block; margin-top: 5px; font-size: 11px;">
-            * Token ကို ဖုန်းထဲမှာပဲ လုံခြုံစွာသိမ်းထားမှာဖြစ်လို့ တစ်ခါပဲ ထည့်ရပါမယ်။
+    <!-- Token ထည့်ရန် နေရာ (Browser ထဲမှာပဲ သိမ်းထားမှာဖြစ်ပြီး GitHub ပေါ် လုံးဝ မရောက်ပါ) -->
+    <div class="form-group" style="background: #eef2f7; padding: 15px; border-radius: 8px; border: 1px solid #d0d7de;">
+        <label style="color: #2D38AB;">🔑 GitHub Token ထည့်ရန်နေရာ</label>
+        <input type="password" id="githubToken" placeholder="ဒီနေရာမှာ ghp_... ကို paste ချပေးပါ" oninput="saveTokenLocally(this.value)">
+        <small style="color: #555; display: block; margin-top: 5px; font-size: 11px; line-height: 1.4;">
+            * တစ်ကြိမ်ပဲ ထည့်ရန်လိုပြီး သင့်ဖုန်းထဲမှာပဲ လုံခြုံစွာ မှတ်ထားပေးပါလိမ့်မည်။ GitHub စက်ရုပ်များ လုံးဝ သိနိုင်တော့မည် မဟုတ်ပါ။
         </small>
     </div>
 
@@ -138,6 +137,7 @@
         const savedToken = localStorage.getItem('my_gh_token');
         if (savedToken) {
             document.getElementById('githubToken').value = savedToken;
+            document.getElementById('tokenAlert').style.display = 'none';
         } else {
             document.getElementById('tokenAlert').style.display = 'block';
         }
@@ -148,18 +148,21 @@
         if(val.trim() !== "") {
             localStorage.setItem('my_gh_token', val.trim());
             document.getElementById('tokenAlert').style.display = 'none';
+        } else {
+            localStorage.removeItem('my_gh_token');
+            document.getElementById('tokenAlert').style.display = 'block';
         }
     }
 
     async function saveBook() {
-        const rawToken = document.getElementById('githubToken').value.trim();
+        const GH_TOKEN = document.getElementById('githubToken').value.trim();
         const imgUrl = document.getElementById('bookImage').value.trim();
         const title = document.getElementById('bookTitle').value.trim();
         const desc = document.getElementById('bookDesc').value;
         const saveBtn = document.getElementById('saveBtn');
         const adminBox = document.getElementById('adminBox');
 
-        if(!rawToken) {
+        if(!GH_TOKEN) {
             alert("ကျေးဇူးပြု၍ GitHub Token အရင်ထည့်ပေးပါ!");
             document.getElementById('githubToken').focus();
             return;
@@ -172,8 +175,6 @@
         saveBtn.innerText = "သိမ်းဆည်းနေပါသည်...";
         adminBox.classList.add('loading');
 
-        // GitHub က Auto-delete မလုပ်အောင် Token ကို parse လုပ်ယူခြင်း
-        const GH_TOKEN = rawToken.substring(0, 4) + rawToken.substring(4);
         const url = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${filepath}?t=${new Date().getTime()}`;
 
         let currentData = [];
@@ -200,7 +201,7 @@
                     }
                 }
             } else if (response.status === 401 || response.status === 403) {
-                alert("ထည့်ထားသော GitHub Token အလုပ်မလုပ်တော့ပါ (သို့မဟုတ်) ပိတ်ခံလိုက်ရပါပြီ။ GitHub ထဲမှာ Token အသစ်တစ်ခုပြန်ယူပြီး ပြန်ထည့်ပေးပါ။");
+                alert("သင်ထည့်ထားသော GitHub Token မှားယွင်းနေပါသည် သို့မဟုတ် ပိတ်ခံထားရပါသည်။ Token အသစ်တစ်ခုပြန်ယူပြီး အစားထိုးပေးပါ။");
                 resetState();
                 return;
             }
@@ -241,7 +242,7 @@
             });
 
             if(uploadRes.ok) {
-                alert("စာအုပ်အား Database (GitHub) ထဲသို့ အောင်မြင်စွာ တင်ပြီးပါပြီ။ ၁ မိနစ်ခန့်အကြာတွင် မူရင်း Web ပေါ်တွင် မြင်တွေ့ရပါမည်။");
+                alert("စာအုပ်အား Database (GitHub) ထဲသို့ အောင်မြင်စွာ တင်ပြီးပါပြီ။");
                 document.getElementById('bookImage').value = '';
                 document.getElementById('bookTitle').value = '';
                 document.getElementById('bookDesc').value = '';
@@ -250,7 +251,7 @@
                 alert("Error: " + errData.message);
             }
         } catch(err) {
-            alert("Network Error: ချိတ်ဆက်မှု အဆင်မပြေပါ! (ထည့်ထားသော Token သက်တမ်းရှိသေးရဲ့လား ပြန်စစ်ပေးပါ)");
+            alert("Network Error: ချိတ်ဆက်မှု အဆင်မပြေပါ! Token ပြန်စစ်ပေးပါ။");
         } finally {
             resetState();
         }
