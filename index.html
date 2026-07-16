@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BurmaRHubb.COM</title>
-    <!-- Google Fonts for Modern Styling -->
     <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -14,7 +13,6 @@
             font-family: 'Poppins', 'Padauk', sans-serif;
         }
 
-        /* Hologram 8 Color Palette Variable Definitions */
         :root {
             --c1: #292B37;
             --c2: #2D38AB;
@@ -27,21 +25,18 @@
             --hologram-grad: linear-gradient(45deg, var(--c2), var(--c3), var(--c4), var(--c5), var(--c6), var(--c7), var(--c8));
         }
 
-        /* Main View Styling (Dark Mode) */
         body.dark-mode {
             background-color: var(--c1);
             color: var(--c4);
             transition: background-color 0.5s ease, color 0.5s ease;
         }
 
-        /* Book View Styling (White Mode) */
         body.light-mode {
             background-color: #ffffff;
             color: #000000;
             transition: background-color 0.5s ease, color 0.5s ease;
         }
 
-        /* Navigation Bar */
         header {
             display: flex;
             justify-content: space-between;
@@ -60,7 +55,6 @@
             border-bottom: 2px solid #000000;
         }
 
-        /* Left Side: Animated Text Name */
         .brand-logo {
             font-size: 24px;
             font-weight: bold;
@@ -85,7 +79,6 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Right Side: Menu Icon */
         .menu-btn {
             background: none;
             border: none;
@@ -103,7 +96,6 @@
             background-color: #000000;
         }
 
-        /* Dropdown Menu Overlay */
         .menu-overlay {
             display: none;
             position: fixed;
@@ -132,7 +124,6 @@
             color: #000000;
         }
 
-        /* Custom Ad Box */
         .ad-container {
             max-width: 1200px;
             margin: 20px auto;
@@ -143,7 +134,7 @@
             text-align: center;
         }
         body.light-mode .ad-container {
-            display: none; /* Hide ads on book mode if desired */
+            display: none;
         }
         .ad-text {
             font-size: 16px;
@@ -166,7 +157,6 @@
             transform: scale(1.05);
         }
 
-        /* Container Section with Fade Transaction */
         .page-view {
             transition: opacity 0.4s ease-in-out;
             opacity: 1;
@@ -178,7 +168,6 @@
             opacity: 0;
         }
 
-        /* Video Grid & Frame Design */
         .video-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -214,36 +203,43 @@
             color: var(--c3);
         }
 
-        /* Book Grid & Black Frame Design */
+        /* Book Grid Container & Black Border styling */
         .book-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 25px;
         }
         .book-card {
             background: #ffffff;
             border: 3px solid #000000;
-            padding: 10px;
-            box-shadow: 5px 5px 0px #000000;
+            padding: 12px;
+            box-shadow: 6px 6px 0px #000000;
             color: #000000;
+            display: flex;
+            flex-direction: column;
+            border-radius: 4px;
         }
         .book-img {
             width: 100%;
-            height: 280px;
+            height: 300px;
             object-fit: cover;
-            border-bottom: 2px solid #000000;
+            border: 2px solid #000000;
+            margin-bottom: 12px;
         }
         .book-title {
             font-size: 16px;
             font-weight: bold;
-            margin: 10px 0 5px 0;
+            margin-bottom: 8px;
+            border-bottom: 1px dashed #000;
+            padding-bottom: 4px;
         }
         .book-desc {
-            font-size: 12px;
-            color: #333333;
-            height: 60px;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            font-size: 13px;
+            color: #222;
+            line-height: 1.5;
+            white-space: pre-wrap; /* စာကြောင်းအသစ်ဆင်းတာတွေ အမှန်အတိုင်းပေါ်စေရန် */
+            max-height: 120px;
+            overflow-y: auto;
         }
     </style>
 </head>
@@ -260,7 +256,6 @@
         </div>
     </header>
 
-    <!-- Custom Ad Section -->
     <div class="ad-container" id="adBox">
         <p class="ad-text">
             ကြော်ငြာအပ်လိုသည့် မိတ်ဆွေများ မိမိတို့၏ လုပ်ငန်းများကို ကြော်ငြာလာရောက် အပ်နှံနိုင်ပါပြီ! <br>
@@ -269,39 +264,32 @@
         <a href="https://t.me/MmpHubAds?text=အကိုရေ%20လုပ်ငန်းကြော်ငြာလေးထည့်ချင်လို့ပါ" target="_blank" class="ad-button">ကြော်ငြာအပ်မည်</a>
     </div>
 
-    <!-- Main Content Area -->
     <main id="mainContent" class="page-view">
-        <!-- Video Content View (Default) -->
         <div id="videoSection">
             <h2 style="margin-bottom: 20px; color: var(--c5);">အသစ်တင်ထားသော ဗီဒီယိုများ</h2>
             <div class="video-grid" id="videoGrid">
-                <!-- Fetching API Data into here -->
                 <p>ဗီဒီယိုများအား ရယူနေပါသည်...</p>
             </div>
         </div>
 
-        <!-- Book Content View (Hidden Initially) -->
         <div id="bookSection" style="display: none;">
             <h2 style="margin-bottom: 20px; color: #000000;">အပြာစာအုပ်စင်</h2>
             <div class="book-grid" id="bookGrid">
-                <!-- Fetching JSON Data into here -->
                 <p>စာအုပ်များအား ရယူနေပါသည်...</p>
             </div>
         </div>
     </main>
 
     <script>
-        // Menu Dropdown Toggle
         function toggleMenu() {
             var menu = document.getElementById('menuOverlay');
             menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
         }
 
-        // Single Page Transaction Animation with View Switch
         function switchView(viewType) {
             var mainContent = document.getElementById('mainContent');
             var menu = document.getElementById('menuOverlay');
-            menu.style.display = 'none'; // Close menu
+            menu.style.display = 'none';
 
             mainContent.classList.add('fade-out');
 
@@ -322,7 +310,6 @@
             }, 400);
         }
 
-        // Fetching Data from ePorner API (Proxy used to bypass CORS if needed)
         function loadVideos() {
             var videoGrid = document.getElementById('videoGrid');
             fetch('https://www.eporner.com/api/v2/video/search/?query=asian&per_page=12&thumbsize=big&order=latest&format=json')
@@ -348,22 +335,37 @@
             });
         }
 
-        // Fetching Books from GitHub Repository JSON file
+        // စာအုပ်များကို caching ပြဿနာမရှိစေရန် timestamp သုံးပြီး fetch လုပ်ခြင်းနှင့် JSON parse error ကင်းအောင်လုပ်ခြင်း
         function loadBooks() {
             var bookGrid = document.getElementById('bookGrid');
-            // 'books.json' dynamic fetch
-            fetch('books.json')
-            .then(response => response.json())
-            .then(data => {
+            
+            // Cache ကိုကျော်ပြီး နောက်ဆုံး Data ရဖို့ `?_=` timestamp ထည့်လိုက်ပါတယ်
+            fetch('books.json?_=' + new Date().getTime())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("HTTP error " + response.status);
+                }
+                return response.text(); // JSON စာသားကို Direct text အဖြစ် အရင်ဖတ်ပါတယ်
+            })
+            .then(rawText => {
+                // Text တစ်ခုလုံးကို JSON format မှန်ကန်စေရန် သန့်စင်ခြင်း
+                // Line breaks (စာကြောင်းသစ်ဆင်းတာတွေ) ကြောင့် parse error မဖြစ်အောင် replace လုပ်ပါတယ်
+                let sanitizedText = rawText.replace(/\n/g, "\\n").replace(/\r/g, "\\r");
+                
+                // စာကြောင်းထောင့်ကွင်းပိတ်များ သန့်စင်ပြီးမှ Parsing စလုပ်ပါတယ်
+                let data = JSON.parse(sanitizedText);
+                
                 bookGrid.innerHTML = '';
                 if(data.length === 0) {
                     bookGrid.innerHTML = '<p>ဖတ်ရှုစရာ စာအုပ်မရှိသေးပါ။ Admin ကနေ စာအုပ်အရင်ထည့်ပေးပါ။</p>';
                     return;
                 }
-                data.forEach(book => {
+                
+                // စာအုပ်အသစ်တွေကို အပေါ်ဆုံးကပြဖို့ reverse() သုံးထားပါတယ်
+                data.reverse().forEach(book => {
                     bookGrid.innerHTML += `
                         <div class="book-card">
-                            <img src="${book.image}" class="book-img" alt="book cover">
+                            <img src="${book.image}" class="book-img" alt="book cover" onerror="this.src='https://via.placeholder.com/240x300?text=No+Cover'">
                             <div class="book-title">${book.title}</div>
                             <div class="book-desc">${book.description}</div>
                         </div>
@@ -371,11 +373,11 @@
                 });
             })
             .catch(err => {
-                bookGrid.innerHTML = '<p>စာအုပ်များဖတ်ရန် books.json ဖိုင်အားရှာမတွေ့သေးပါ။</p>';
+                console.error("Fetch/Parse Error:", err);
+                bookGrid.innerHTML = '<p>စာအုပ်များ ဖတ်ရှုရန် စာအုပ်မရှိသေးပါ သို့မဟုတ် ဒေတာအဆွဲအယူ မှားယွင်းနေပါသည်။</p>';
             });
         }
 
-        // Initial Load
         window.onload = function() {
             loadVideos();
         };
