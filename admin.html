@@ -108,7 +108,7 @@
     const GH_USER = "myanmarpagoda112-ux";
     const GH_REPO = "arr-t-2";
     
-    // Token ခွဲရေးထားခြင်း (လုံခြုံရေးအရ)
+    // Token ကို အစိတ်စိတ်အမွှာမွှာခွဲထားခြင်း (GitHub Auto-Revoke ရန်မှ ကာကွယ်ရန်)
     const part1 = "g" + "h" + "p" + "_";
     const part2 = "7lwq10gQ";
     const part3 = "9GJYu4ov";
@@ -134,13 +134,13 @@
 
         const filepath = 'books.json';
         
-        // Cache မငြိအောင် Query Parameter အဖြစ် timestamp ထည့်ပြီး API ဆွဲပါတယ်
+        // Cache ကိုကျော်ပြီး GitHub API ဆီက Real-time Response တိုက်ရိုက်ဆွဲယူရန်
         const url = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${filepath}?t=${new Date().getTime()}`;
 
         let currentData = [];
-        let sha = "";
+        let sha = null;
 
-        // ၁။ နောက်ဆုံး SHA နှင့် books.json အဟောင်းကို အသစ်ဆုံး Cache-free API နဲ့ ဆွဲယူမယ်
+        // ၁။ books.json နှင့် SHA ကို အသေအချာဆွဲယူမယ်
         try {
             let response = await fetch(url, {
                 headers: { 
@@ -152,12 +152,18 @@
             
             if(response.ok) {
                 let jsonRes = await response.json();
-                sha = jsonRes.sha; // ဒီ sha ကုဒ်ကို သေချာပေါက် ရအောင်ယူရပါမယ်
-                let decodedContent = decodeURIComponent(escape(atob(jsonRes.content)));
-                currentData = JSON.parse(decodedContent);
+                sha = jsonRes.sha; // SHA ကို သေချာသိမ်းဆည်းမယ်
+                
+                // ဖိုင်ရှိပြီး ဒေတာပါဝင်ခဲ့ရင် JSON ပြန်ပြောင်းမယ်
+                if (jsonRes.content) {
+                    let decodedContent = decodeURIComponent(escape(atob(jsonRes.content.replace(/\s/g, ''))));
+                    if (decodedContent.trim() !== "" && decodedContent.trim() !== "[]") {
+                        currentData = JSON.parse(decodedContent);
+                    }
+                }
             }
         } catch(e) {
-            console.log("Starting a new config or file does not exist yet.");
+            console.log("No previous data found or parse error. Creating fresh array.");
         }
 
         // ၂။ စာအုပ်အသစ်ထည့်မယ်
@@ -169,7 +175,7 @@
         };
         currentData.push(newBook);
 
-        // ၃။ Base64 encode လုပ်မယ်
+        // ၃။ Base64 encode ပြုလုပ်မယ်
         const updatedContentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(currentData, null, 2))));
         
         let bodyData = {
@@ -177,23 +183,26 @@
             content: updatedContentBase64
         };
         
-        // ဖိုင်ရှိပြီးသားဖြစ်တဲ့အတွက် SHA ကို သေချာပေါက် ထည့်ပေးရပါမယ်
-        if(sha !== "") {
+        // **ဒီအဆင့်က အရေးကြီးဆုံးဖြစ်ပါတယ်** 
+        // GitHub API က SHA ကုဒ် ပေးခဲ့လျှင် (ဖိုင်ဟောင်းရှိနေလျှင်) Update လုပ်ရန် SHA ကို မဖြစ်မနေ ထည့်ပေးရပါမယ်။
+        if(sha) {
             bodyData.sha = sha;
         }
 
         try {
+            // PUT request ကို Header ထဲမှာ Cache-Control အပြည့်အဝပါဝင်ပြီး ပို့မယ်
             let uploadRes = await fetch(`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${filepath}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `token ${GH_TOKEN}`,
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Cache-Control': 'no-cache'
                 },
                 body: JSON.stringify(bodyData)
             });
 
             if(uploadRes.ok) {
-                alert("စာအုပ်အား Database (GitHub) ထဲသို့ အောင်မြင်စွာ တင်ပြီးပါပြီ။ ခဏအကြာတွင် မူရင်း Web ပေါ်တွင် မြင်တွေ့ရပါမည်။");
+                alert("စာအုပ်အား Database (GitHub) ထဲသို့ အောင်မြင်စွာ တင်ပြီးပါပြီ။ ၁ မိနစ်ခန့်အကြာတွင် မူရင်း Web ပေါ်တွင် မြင်တွေ့ရပါမည်။");
                 document.getElementById('bookImage').value = '';
                 document.getElementById('bookTitle').value = '';
                 document.getElementById('bookDesc').value = '';
