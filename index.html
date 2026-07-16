@@ -203,43 +203,48 @@
             color: var(--c3);
         }
 
-        /* Book Grid Container & Black Border styling */
+        /* စာအုပ်စင် Style ပြင်ဆင်မှုများ */
         .book-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 25px;
         }
         .book-card {
             background: #ffffff;
             border: 3px solid #000000;
-            padding: 12px;
+            padding: 15px;
             box-shadow: 6px 6px 0px #000000;
             color: #000000;
             display: flex;
             flex-direction: column;
-            border-radius: 4px;
+            border-radius: 6px;
         }
         .book-img {
             width: 100%;
-            height: 300px;
+            height: 350px;
             object-fit: cover;
             border: 2px solid #000000;
             margin-bottom: 12px;
+            border-radius: 4px;
         }
         .book-title {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: bold;
-            margin-bottom: 8px;
-            border-bottom: 1px dashed #000;
-            padding-bottom: 4px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #000;
+            padding-bottom: 6px;
         }
         .book-desc {
-            font-size: 13px;
-            color: #222;
-            line-height: 1.5;
-            white-space: pre-wrap; /* စာကြောင်းအသစ်ဆင်းတာတွေ အမှန်အတိုင်းပေါ်စေရန် */
-            max-height: 120px;
+            font-size: 14px;
+            color: #111;
+            line-height: 1.6;
+            white-space: pre-wrap; /* Enter ခေါက်တာတွေကို ပုံစံမပျက် ပြသပေးမယ် */
+            max-height: 250px; /* စာအုပ်ရှည်ကြီးတွေကို Box ထဲမှာ အောက်ဆင်းဖတ်လို့ရအောင် */
             overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background: #fbfbfb;
+            border-radius: 4px;
         }
     </style>
 </head>
@@ -335,33 +340,22 @@
             });
         }
 
-        // စာအုပ်များကို caching ပြဿနာမရှိစေရန် timestamp သုံးပြီး fetch လုပ်ခြင်းနှင့် JSON parse error ကင်းအောင်လုပ်ခြင်း
+        // စာအုပ်များကို caching ကင်းပြီး အမှားအယွင်းမရှိ ဖတ်ရှုရန်စနစ်
         function loadBooks() {
             var bookGrid = document.getElementById('bookGrid');
             
-            // Cache ကိုကျော်ပြီး နောက်ဆုံး Data ရဖို့ `?_=` timestamp ထည့်လိုက်ပါတယ်
             fetch('books.json?_=' + new Date().getTime())
             .then(response => {
-                if (!response.ok) {
-                    throw new Error("HTTP error " + response.status);
-                }
-                return response.text(); // JSON စာသားကို Direct text အဖြစ် အရင်ဖတ်ပါတယ်
+                if (!response.ok) throw new Error("HTTP error " + response.status);
+                return response.json(); // အပေါ်က admin.html ကြောင့် JSON က လုံးဝသန့်စင်ပြီးသားဖြစ်လို့ တိုက်ရိုက်ဖတ်နိုင်ပါပြီ
             })
-            .then(rawText => {
-                // Text တစ်ခုလုံးကို JSON format မှန်ကန်စေရန် သန့်စင်ခြင်း
-                // Line breaks (စာကြောင်းသစ်ဆင်းတာတွေ) ကြောင့် parse error မဖြစ်အောင် replace လုပ်ပါတယ်
-                let sanitizedText = rawText.replace(/\n/g, "\\n").replace(/\r/g, "\\r");
-                
-                // စာကြောင်းထောင့်ကွင်းပိတ်များ သန့်စင်ပြီးမှ Parsing စလုပ်ပါတယ်
-                let data = JSON.parse(sanitizedText);
-                
+            .then(data => {
                 bookGrid.innerHTML = '';
                 if(data.length === 0) {
                     bookGrid.innerHTML = '<p>ဖတ်ရှုစရာ စာအုပ်မရှိသေးပါ။ Admin ကနေ စာအုပ်အရင်ထည့်ပေးပါ။</p>';
                     return;
                 }
                 
-                // စာအုပ်အသစ်တွေကို အပေါ်ဆုံးကပြဖို့ reverse() သုံးထားပါတယ်
                 data.reverse().forEach(book => {
                     bookGrid.innerHTML += `
                         <div class="book-card">
