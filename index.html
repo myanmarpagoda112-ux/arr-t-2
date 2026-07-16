@@ -158,7 +158,7 @@
         }
 
         .page-view {
-            transition: opacity 0.4s ease-in-out;
+            transition: opacity 0.3s ease-in-out;
             opacity: 1;
             padding: 20px;
             max-width: 1200px;
@@ -218,6 +218,12 @@
             display: flex;
             flex-direction: column;
             border-radius: 6px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .book-card:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0px #000000;
         }
         .book-img {
             width: 100%;
@@ -230,27 +236,80 @@
         .book-title {
             font-size: 18px;
             font-weight: bold;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             border-bottom: 2px solid #000;
             padding-bottom: 6px;
         }
-        .book-desc {
-            font-size: 14px;
-            color: #111;
-            line-height: 1.6;
-            white-space: pre-wrap;
-            max-height: 250px;
-            overflow-y: auto;
-            border: 1px solid #ddd;
-            padding: 10px;
-            background: #fbfbfb;
+        .book-preview-desc {
+            font-size: 13px;
+            color: #555;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2; /* စာကြောင်း ၂ ကြောင်းပဲ ပြပြီး နှိပ်မှ အကုန်ဖတ်ရအောင် လုပ်ထားသည် */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* စာအုပ်ဖတ်မည့် သီးသန့် Activity Page (Reader View) */
+        .reader-container {
+            display: none; /* အစပိုင်းမှာ ဖျောက်ထားမည် */
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #ffffff;
+            color: #000000;
+            border: 3px solid #000000;
+            box-shadow: 8px 8px 0px #000000;
+            border-radius: 8px;
+        }
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            background: #000000;
+            color: #ffffff;
+            font-weight: bold;
+            border: none;
             border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+        .back-btn:hover {
+            background: #333333;
+        }
+        .reader-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            border-bottom: 3px double #000000;
+            padding-bottom: 10px;
+            line-height: 1.4;
+        }
+        .reader-hero-img {
+            width: 100%;
+            max-height: 450px;
+            object-fit: contain;
+            border: 2px solid #000000;
+            border-radius: 6px;
+            margin-bottom: 25px;
+            background: #f9f9f9;
+        }
+        .reader-content {
+            font-size: 18px; /* စာလုံးကြီးကြီး ရှင်းရှင်းလင်းလင်း ဖတ်ရအောင် */
+            line-height: 1.8;
+            white-space: pre-wrap; /* Enter ခေါက်ထားတာတွေ၊ ဆင်းထားတာတွေ အော်တို သိရှိစေရန် */
+            color: #111111;
+            letter-spacing: 0.5px;
+            text-align: justify;
         }
     </style>
 </head>
 <body class="dark-mode">
 
-    <header>
+    <header id="mainHeader">
         <div class="brand-logo" id="siteLogo">BurmaRHubb.COM</div>
         <button class="menu-btn" onclick="toggleMenu()">
             <div></div><div></div><div></div>
@@ -269,7 +328,9 @@
         <a href="https://t.me/MmpHubAds?text=အကိုရေ%20လုပ်ငန်းကြော်ငြာလေးထည့်ချင်လို့ပါ" target="_blank" class="ad-button">ကြော်ငြာအပ်မည်</a>
     </div>
 
+    <!-- Main Views -->
     <main id="mainContent" class="page-view">
+        <!-- ဗီဒီယိုပြသခန်း -->
         <div id="videoSection">
             <h2 style="margin-bottom: 20px; color: var(--c5);">အသစ်တင်ထားသော ဗီဒီယိုများ</h2>
             <div class="video-grid" id="videoGrid">
@@ -277,6 +338,7 @@
             </div>
         </div>
 
+        <!-- အပြာစာအုပ်စင် -->
         <div id="bookSection" style="display: none;">
             <h2 style="margin-bottom: 20px; color: #000000;">အပြာစာအုပ်စင်</h2>
             <div class="book-grid" id="bookGrid">
@@ -285,9 +347,21 @@
         </div>
     </main>
 
+    <!-- 📖 သီးသန့်စာအုပ်ဖတ်ရန် စာမျက်နှာ (Detail Activity View) -->
+    <div id="readerView" class="reader-container">
+        <button class="back-btn" onclick="closeReader()">⬅ နောက်သို့ပြန်သွားရန်</button>
+        <h1 class="reader-title" id="rtitle">စာအုပ်ခေါင်းစဉ်</h1>
+        <img src="" class="reader-hero-img" id="rimage" alt="Book Cover" onerror="this.src='https://via.placeholder.com/240x300?text=No+Cover'">
+        <div class="reader-content" id="rdesc">
+            ဒီနေရာမှာ စာသားတွေအပြည့် ပေါ်လာပါမယ်...
+        </div>
+    </div>
+
     <script>
-        // မင်းရဲ့ Google Sheet ID ကို စနစ်တကျ ထည့်သွင်းပေးထားပြီးဖြစ်ပါတယ်
         const SHEET_ID = "1wT2ttqz3G_RiSmYEZ-EsV-glap1c7VOidzpUb3easpg"; 
+        
+        // စာအုပ်ဒေတာတွေကို Store လုပ်ထားရန် Global Variable
+        let allBooks = [];
 
         function toggleMenu() {
             var menu = document.getElementById('menuOverlay');
@@ -295,6 +369,9 @@
         }
 
         function switchView(viewType) {
+            // စာအုပ်ဖတ်ခန်းပွင့်နေရင် အရင်ပိတ်လိုက်ပါမယ်
+            closeReader();
+
             var mainContent = document.getElementById('mainContent');
             var menu = document.getElementById('menuOverlay');
             menu.style.display = 'none';
@@ -315,7 +392,7 @@
                     document.getElementById('adBox').style.display = 'block';
                 }
                 mainContent.classList.remove('fade-out');
-            }, 400);
+            }, 300);
         }
 
         function loadVideos() {
@@ -343,7 +420,7 @@
             });
         }
 
-        // Google Sheet (Form Response) ကနေ အခမဲ့၊ လုံခြုံစွာနဲ့ ဒေတာဆွဲယူပြသပေးသည့်စနစ်
+        // Sheet ကနေ စာအုပ်များဆွဲတင်ပြသခြင်း
         function loadBooksFromFormSheet() {
             var bookGrid = document.getElementById('bookGrid');
             bookGrid.innerHTML = '<p>စာအုပ်များအား ဆွဲယူနေပါသည်...</p>';
@@ -355,7 +432,7 @@
             .then(csvText => {
                 bookGrid.innerHTML = '';
                 
-                // CSV စာသားကို အတန်းလိုက် ခွဲထုတ်ခြင်း
+                // CSV Parsing လုပ်ခြင်း
                 const rows = csvText.split('\n').map(row => {
                     return row.split('","').map(val => val.replace(/^"|"$/g, '').trim());
                 });
@@ -365,21 +442,21 @@
                     return;
                 }
 
-                // စာအုပ်အသစ်တင်သမျှ အပေါ်ဆုံးမှာ အမြဲပေါ်စေရန် ပြောင်းပြန်လှန်သည်
-                const books = rows.slice(1).reverse();
+                // Header တန်းဖယ်ပြီး အသစ်တွေကို အပေါ်ဆုံးပြဖို့ ပြောင်းပြန်လှန်ပြီး Global ထဲထည့်ပါမယ်
+                allBooks = rows.slice(1).reverse();
 
-                books.forEach(book => {
-                    // Google Form ရဲ့ သဘောသဘာဝအရ Column 0=Timestamp, Column 1=image, Column 2=title, Column 3=description ဖြစ်ပါတယ်
+                allBooks.forEach((book, index) => {
                     if (book.length >= 4 && book[2] !== "") {
                         const image = book[1] || 'https://via.placeholder.com/240x300?text=No+Cover';
                         const title = book[2];
                         const description = book[3] ? book[3].replace(/\\n/g, '\n') : '';
 
+                        // ကတ်ပြားလေးထဲမှာ စာသားအစပိုင်းလေးပဲ နမူနာပြပါမယ်
                         bookGrid.innerHTML += `
-                            <div class="book-card">
+                            <div class="book-card" onclick="openReader(${index})">
                                 <img src="${image}" class="book-img" alt="book cover" onerror="this.src='https://via.placeholder.com/240x300?text=No+Cover'">
                                 <div class="book-title">${title}</div>
-                                <div class="book-desc">${description}</div>
+                                <div class="book-preview-desc">${description}</div>
                             </div>
                         `;
                     }
@@ -387,8 +464,47 @@
             })
             .catch(err => {
                 console.error(err);
-                bookGrid.innerHTML = '<p>စာအုပ်များ ဆွဲယူရာတွင် အမှားအယွင်းရှိနေပါသည်။ (Google Sheet ရဲ့ Share status ကို Anyone with the link ပြောင်းထားဖို့ မမေ့ပါနဲ့ဗျာ)</p>';
+                bookGrid.innerHTML = '<p>စာအုပ်များ ဆွဲယူရာတွင် အမှားအယွင်းရှိနေပါသည်။</p>';
             });
+        }
+
+        // 📖 စာအုပ်ကို နှိပ်လိုက်ရင် သီးသန့် Reader စာမျက်နှာ (Activity) ကို ဖွင့်ပေးမယ့် Function
+        function openReader(index) {
+            const book = allBooks[index];
+            if (!book) return;
+
+            const image = book[1] || 'https://via.placeholder.com/240x300?text=No+Cover';
+            const title = book[2];
+            const description = book[3] ? book[3].replace(/\\n/g, '\n') : '';
+
+            // Data တွေဖြည့်သွင်းခြင်း
+            document.getElementById('rtitle').innerText = title;
+            document.getElementById('rimage').src = image;
+            document.getElementById('rdesc').innerText = description;
+
+            // အရင်ရှိတဲ့ Header, စာအုပ်စင် စာမျက်နှာတွေ အကုန်ဖျောက်လိုက်ပါမယ်
+            document.getElementById('mainHeader').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'none';
+            document.getElementById('adBox').style.display = 'none';
+
+            // Reader စာမျက်နှာသစ်ကို မျက်နှာပြင်အပြည့် ဖွင့်ပေးလိုက်ပါမယ်
+            document.getElementById('readerView').style.display = 'block';
+            window.scrollTo(0, 0); // ဖတ်ရလွယ်အောင် Page ကို အပေါ်ဆုံးတင်ပေးသည်
+        }
+
+        // ⬅ ပြန်ထွက်မည့် Function
+        function closeReader() {
+            // Reader စာမျက်နှာကို ပြန်ဖျောက်မယ်
+            document.getElementById('readerView').style.display = 'none';
+
+            // Header နဲ့ မူလ စာမျက်နှာကို ပြန်ပြမယ်
+            document.getElementById('mainHeader').style.display = 'flex';
+            document.getElementById('mainContent').style.display = 'block';
+            
+            // ဗီဒီယိုခန်း သို့မဟုတ် စာအုပ်စင် အခြေအနေပေါ်မူတည်ပြီး Adbox ပြန်ပြသင့်မပြသင့် သတ်မှတ်သည်
+            if(document.getElementById('bookSection').style.display === 'none') {
+                document.getElementById('adBox').style.display = 'block';
+            }
         }
 
         window.onload = function() {
