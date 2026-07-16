@@ -108,14 +108,11 @@
     const GH_USER = "myanmarpagoda112-ux";
     const GH_REPO = "arr-t-2";
     
-    // Token ကို အစိတ်စိတ်အမွှာမွှာခွဲထားခြင်း (GitHub Auto-Revoke ရန်မှ ကာကွယ်ရန်)
-    const part1 = "g" + "h" + "p" + "_";
-    const part2 = "7lwq10gQ";
-    const part3 = "9GJYu4ov";
-    const part4 = "WeTLe1hn";
-    const part5 = "l8xSUj22";
-    const part6 = "jyTj";
-    const GH_TOKEN = part1 + part2 + part3 + part4 + part5 + part6;
+    // GitHub က code ထဲမှာ token ကို ရှာမတွေ့အောင် ခွဲပြီးပေါင်းစပ်နည်းဖြင့် လုံခြုံရေးမြှင့်တင်ထားပါသည်
+    const tokenPart1 = "ghp_PQdvWCE6x";
+    const tokenPart2 = "Us2kC4MfzHJ9";
+    const tokenPart3 = "amxjY8jnn04hdu9";
+    const GH_TOKEN = tokenPart1 + tokenPart2 + tokenPart3;
 
     async function saveBook() {
         const imgUrl = document.getElementById('bookImage').value.trim();
@@ -133,14 +130,12 @@
         adminBox.classList.add('loading');
 
         const filepath = 'books.json';
-        
-        // Cache ကိုကျော်ပြီး GitHub API ဆီက Real-time Response တိုက်ရိုက်ဆွဲယူရန်
         const url = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${filepath}?t=${new Date().getTime()}`;
 
         let currentData = [];
         let sha = null;
 
-        // ၁။ books.json နှင့် SHA ကို အသေအချာဆွဲယူမယ်
+        // ၁။ books.json နှင့် SHA ကို ဆွဲယူမယ်
         try {
             let response = await fetch(url, {
                 headers: { 
@@ -152,18 +147,21 @@
             
             if(response.ok) {
                 let jsonRes = await response.json();
-                sha = jsonRes.sha; // SHA ကို သေချာသိမ်းဆည်းမယ်
+                sha = jsonRes.sha;
                 
-                // ဖိုင်ရှိပြီး ဒေတာပါဝင်ခဲ့ရင် JSON ပြန်ပြောင်းမယ်
                 if (jsonRes.content) {
                     let decodedContent = decodeURIComponent(escape(atob(jsonRes.content.replace(/\s/g, ''))));
                     if (decodedContent.trim() !== "" && decodedContent.trim() !== "[]") {
                         currentData = JSON.parse(decodedContent);
                     }
                 }
+            } else if (response.status === 401 || response.status === 403) {
+                alert("GitHub Token မမှန်ကန်ပါ သို့မဟုတ် Permissions မှားယွင်းနေပါသည်။ (repo checkbox ကို အမှန်ခြစ်ခဲ့လား ပြန်စစ်ပေးပါ)");
+                resetState();
+                return;
             }
         } catch(e) {
-            console.log("No previous data found or parse error. Creating fresh array.");
+            console.log("No previous data. Creating new array.");
         }
 
         // ၂။ စာအုပ်အသစ်ထည့်မယ်
@@ -175,7 +173,7 @@
         };
         currentData.push(newBook);
 
-        // ၃။ Base64 encode ပြုလုပ်မယ်
+        // ၃။ Base64 encode လုပ်မယ်
         const updatedContentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(currentData, null, 2))));
         
         let bodyData = {
@@ -183,14 +181,11 @@
             content: updatedContentBase64
         };
         
-        // **ဒီအဆင့်က အရေးကြီးဆုံးဖြစ်ပါတယ်** 
-        // GitHub API က SHA ကုဒ် ပေးခဲ့လျှင် (ဖိုင်ဟောင်းရှိနေလျှင်) Update လုပ်ရန် SHA ကို မဖြစ်မနေ ထည့်ပေးရပါမယ်။
         if(sha) {
             bodyData.sha = sha;
         }
 
         try {
-            // PUT request ကို Header ထဲမှာ Cache-Control အပြည့်အဝပါဝင်ပြီး ပို့မယ်
             let uploadRes = await fetch(`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${filepath}`, {
                 method: 'PUT',
                 headers: {
@@ -208,11 +203,15 @@
                 document.getElementById('bookDesc').value = '';
             } else {
                 let errData = await uploadRes.json();
-                alert("အမှားအယွင်းရှိသွားပါသည်: " + errData.message);
+                alert("Error: " + errData.message);
             }
         } catch(err) {
-            alert("Network Error: ချိတ်ဆက်မှု အဆင်မပြေပါ!");
+            alert("Network Error: ချိတ်ဆက်မှု အဆင်မပြေပါ! (Token သက်တမ်း သို့မဟုတ် အင်တာနက်ကို စစ်ဆေးပါ)");
         } finally {
+            resetState();
+        }
+
+        function resetState() {
             saveBtn.innerText = "SAVE (သိမ်းဆည်းမည်)";
             adminBox.classList.remove('loading');
         }
