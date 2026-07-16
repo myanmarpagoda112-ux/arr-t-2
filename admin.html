@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BurmaHubb - Admin Panel</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+        body {
+            background-color: #0c0f12;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .admin-box {
+            width: 100%;
+            max-width: 500px;
+            background: #161b22;
+            border: 2px solid #C6FF33;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 0 25px rgba(198, 255, 51, 0.15);
+        }
+        h2 {
+            text-align: center;
+            color: #C6FF33;
+            margin-bottom: 24px;
+            font-size: 1.6rem;
+            letter-spacing: 1px;
+        }
+        .input-group {
+            margin-bottom: 18px;
+        }
+        label {
+            display: block;
+            font-size: 0.9rem;
+            color: #8b949e;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 12px;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            color: #ffffff;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input[type="text"]:focus, textarea:focus {
+            border-color: #C6FF33;
+        }
+        textarea {
+            height: 150px;
+            resize: vertical;
+        }
+        .save-btn {
+            width: 100%;
+            background: #C6FF33;
+            color: #000000;
+            border: none;
+            border-radius: 6px;
+            padding: 14px;
+            font-size: 1.05rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 10px;
+        }
+        .save-btn:active {
+            opacity: 0.9;
+        }
+        .status-msg {
+            text-align: center;
+            margin-top: 14px;
+            font-size: 0.9rem;
+            display: none;
+        }
+        .view-site-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #33FFF3;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="admin-box">
+    <h2>စာအုပ်အသစ်တင်ရန် Panel</h2>
+    
+    <div class="input-group">
+        <label>ပထမ Box - Cover Image Direct URL (PNG/JPG)</label>
+        <input type="text" id="bookCover" placeholder="https://i.ibb.co/.../image.png">
+    </div>
+
+    <div class="input-group">
+        <label>ဒုတိယ Box - စာအုပ်နာမည်</label>
+        <input type="text" id="bookTitle" placeholder="စာအုပ်ခေါင်းစဉ် ရေးရန်...">
+    </div>
+
+    <div class="input-group">
+        <label>တတိယ Box - စာအုပ်အကြောင်းအရာများ (Content)</label>
+        <textarea id="bookContent" placeholder="စာအုပ်ထဲက စာသားအကြောင်းအရာများကို ဤနေရာတွင် စိတ်ကြိုက် အများကြီး ရေးနိုင်ပါသည်..."></textarea>
+    </div>
+
+    <button class="save-btn" onclick="saveNewBook()">SAVE (စာအုပ်သိမ်းမည်)</button>
+    
+    <div class="status-msg" id="statusMessage"></div>
+
+    <a href="index.html" class="view-site-link">🏠 ပင်မ Web သို့ ပြန်သွားရန်</a>
+</div>
+
+<script>
+    function saveNewBook() {
+        const cover = document.getElementById('bookCover').value.trim();
+        const title = document.getElementById('bookTitle').value.trim();
+        const content = document.getElementById('bookContent').value.trim();
+        const status = document.getElementById('statusMessage');
+
+        if (!cover || !title || !content) {
+            status.style.color = '#ff3366';
+            status.innerText = "⚠️ Box အားလုံးကို ပြည့်စုံအောင် ဖြည့်စွက်ပေးပါ။";
+            status.style.display = 'block';
+            return;
+        }
+
+        // Default Books Structure setup if empty
+        let currentBooks = [];
+        if (localStorage.getItem('burmaHubBooks')) {
+            currentBooks = JSON.parse(localStorage.getItem('burmaHubBooks'));
+        }
+
+        // Create New Book Object
+        const newBook = {
+            title: title,
+            cover: cover,
+            content: content
+        };
+
+        // Add to stack
+        currentBooks.push(newBook);
+
+        // Commit back to local storage
+        localStorage.setItem('burmaHubBooks', JSON.stringify(currentBooks));
+
+        // Display Success Status
+        status.style.color = '#33FF57';
+        status.innerText = "✅ စာအုပ်ကို အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ။";
+        status.style.display = 'block';
+
+        // Clear Fields
+        document.getElementById('bookCover').value = "";
+        document.getElementById('bookTitle').value = "";
+        document.getElementById('bookContent').value = "";
+
+        setTimeout(() => {
+            status.style.display = 'none';
+        }, 3000);
+    }
+</script>
+
+</body>
+</html>
